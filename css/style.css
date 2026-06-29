@@ -1,0 +1,65 @@
+/* ==========================================================================
+   Estilos customizados — Dippe Viagens
+   Tudo que não é "utilitário do Tailwind" mora aqui (efeitos de hover,
+   sombras especiais, gradientes, etc).
+   ========================================================================== */
+
+body {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  background-color: #f7f9fb;
+  color: #191c1e;
+}
+
+/* Efeito de vidro (blur) usado no menu de navegação fixo */
+.glass-nav {
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+/* Sombra "premium" usada nos cards (serviços, equipe, depoimentos) */
+.premium-shadow {
+  box-shadow: 0 12px 32px -8px rgba(0, 30, 64, 0.12);
+}
+
+/* Sombra mais intensa ao passar o mouse sobre os cards */
+.card-hover:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 40px -12px rgba(0, 30, 64, 0.18);
+}
+
+/* Indicador do link ativo no menu (sublinhado) */
+.active-nav-link {
+  border-bottom: 2px solid #001e40;
+  padding-bottom: 4px;
+}
+
+/* Fundo decorativo com gradientes suaves (seção de serviços/depoimentos) */
+.bg-mesh {
+  background-image:
+    radial-gradient(at 0% 0%, rgba(213, 227, 255, 0.3) 0, transparent 50%),
+    radial-gradient(at 100% 100%, rgba(198, 231, 255, 0.3) 0, transparent 50%);
+}
+
+/* ==========================================================================
+   Menu mobile (sanduíche)
+   Por padrão fica escondido e desliza para baixo quando o botão é clicado.
+   A classe ".is-open" é adicionada/removida via JavaScript (js/main.js).
+   ========================================================================== */
+.mobile-nav {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.35s ease;
+}
+
+.mobile-nav.is-open {
+  max-height: 480px; /* alto o suficiente para caber todos os links */
+}
+
+/* Ícone do hambúrguer vira "X" quando o menu está aberto */
+.hamburger-icon {
+  transition: transform 0.25s ease;
+}
+
+.hamburger-icon.is-open {
+  transform: rotate(90deg);
+}

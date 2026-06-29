@@ -34,6 +34,7 @@
       <a class="font-label-md text-label-md text-primary active-nav-link" href="#top">Home</a>
       <a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors cursor-pointer" href="#services">Serviços</a>
       <a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors cursor-pointer" href="#about">Sobre Nós</a>
+      <a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors cursor-pointer" href="#galeria">Galeria</a>
       <a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors cursor-pointer" href="#depoimentos">Depoimentos</a>
       <a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors cursor-pointer" href="#contact">Contato</a>
     </nav>
@@ -55,6 +56,7 @@
       <a class="font-label-md text-label-md text-primary" href="#top">Home</a>
       <a class="font-label-md text-label-md text-on-surface-variant" href="#services">Serviços</a>
       <a class="font-label-md text-label-md text-on-surface-variant" href="#about">Sobre Nós</a>
+      <a class="font-label-md text-label-md text-on-surface-variant" href="#galeria">Galeria</a>
       <a class="font-label-md text-label-md text-on-surface-variant" href="#depoimentos">Depoimentos</a>
       <a class="font-label-md text-label-md text-on-surface-variant" href="#contact">Contato</a>
       <a class="px-md py-sm bg-primary text-on-primary font-label-md text-label-md rounded-lg text-center" href="#contact">Consultoria Grátis</a>
@@ -218,6 +220,76 @@
   </section>
 
   <!-- ==========================================================================
+       GALERIA DE FOTOS
+       Mostra a equipe em viagem (bastidores, destinos, atendimento) para criar
+       conexão e credibilidade. Clique numa foto para abrir em tamanho maior
+       (ver initGallery() em js/main.js).
+       Fotos fictícias (placeholder) — troque os "src" pelas fotos reais.
+       ========================================================================== -->
+  <section class="py-xl bg-mesh border-t border-outline-variant/20" id="galeria">
+    <div class="max-w-7xl mx-auto px-margin-mobile md:px-margin-desktop">
+      <div class="text-center mb-xl">
+        <span class="text-secondary font-label-md text-label-md tracking-widest uppercase">Bastidores Dippe</span>
+        <h2 class="font-headline-lg text-headline-lg text-primary mt-sm">Nossa Galeria de Fotos</h2>
+        <p class="font-body-md text-body-md text-on-surface-variant mt-sm max-w-2xl mx-auto">Cada viagem que planejamos para você passa antes pela nossa própria experiência nesses destinos.</p>
+      </div>
+
+      <!-- Grade uniforme: 2 colunas no celular, 3 no tablet, 4 no desktop. Todas as fotos no mesmo tamanho (aspecto quadrado) para evitar buracos no grid. -->
+      <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-sm md:gap-md">
+
+        <button class="gallery-item group relative overflow-hidden rounded-xl premium-shadow" data-full="https://picsum.photos/seed/dippe-santorini/900/900">
+          <img alt="Equipe Dippe Viagens em Santorini, Grécia" class="w-full h-full aspect-square object-cover transition-transform duration-500 group-hover:scale-110" src="https://picsum.photos/seed/dippe-santorini/600/600"/>
+          <span class="absolute inset-0 bg-primary/0 group-hover:bg-primary/20 transition-colors"></span>
+        </button>
+
+        <button class="gallery-item group relative overflow-hidden rounded-xl premium-shadow" data-full="https://picsum.photos/seed/dippe-paris/900/900">
+          <img alt="Felippe em viagem de trabalho em Paris" class="w-full h-full aspect-square object-cover transition-transform duration-500 group-hover:scale-110" src="https://picsum.photos/seed/dippe-paris/600/600"/>
+          <span class="absolute inset-0 bg-primary/0 group-hover:bg-primary/20 transition-colors"></span>
+        </button>
+
+        <button class="gallery-item group relative overflow-hidden rounded-xl premium-shadow" data-full="https://picsum.photos/seed/dippe-maldivas/900/900">
+          <img alt="Diogo conhecendo hotel parceiro nas Maldivas" class="w-full h-full aspect-square object-cover transition-transform duration-500 group-hover:scale-110" src="https://picsum.photos/seed/dippe-maldivas/600/600"/>
+          <span class="absolute inset-0 bg-primary/0 group-hover:bg-primary/20 transition-colors"></span>
+        </button>
+
+        <button class="gallery-item group relative overflow-hidden rounded-xl premium-shadow" data-full="https://picsum.photos/seed/dippe-italia/900/900">
+          <img alt="Larissa registrando bastidores de viagem na Itália" class="w-full h-full aspect-square object-cover transition-transform duration-500 group-hover:scale-110" src="https://picsum.photos/seed/dippe-italia/600/600"/>
+          <span class="absolute inset-0 bg-primary/0 group-hover:bg-primary/20 transition-colors"></span>
+        </button>
+
+        <button class="gallery-item group relative overflow-hidden rounded-xl premium-shadow" data-full="https://picsum.photos/seed/dippe-japao/900/900">
+          <img alt="Equipe Dippe Viagens em viagem de reconhecimento no Japão" class="w-full h-full aspect-square object-cover transition-transform duration-500 group-hover:scale-110" src="https://picsum.photos/seed/dippe-japao/600/600"/>
+          <span class="absolute inset-0 bg-primary/0 group-hover:bg-primary/20 transition-colors"></span>
+        </button>
+
+        <button class="gallery-item group relative overflow-hidden rounded-xl premium-shadow" data-full="https://picsum.photos/seed/dippe-atendimento/900/900">
+          <img alt="Bastidores de atendimento personalizado a clientes" class="w-full h-full aspect-square object-cover transition-transform duration-500 group-hover:scale-110" src="https://picsum.photos/seed/dippe-atendimento/600/600"/>
+          <span class="absolute inset-0 bg-primary/0 group-hover:bg-primary/20 transition-colors"></span>
+        </button>
+
+        <button class="gallery-item group relative overflow-hidden rounded-xl premium-shadow" data-full="https://picsum.photos/seed/dippe-grecia2/900/900">
+          <img alt="Bastidores de viagem na Grécia" class="w-full h-full aspect-square object-cover transition-transform duration-500 group-hover:scale-110" src="https://picsum.photos/seed/dippe-grecia2/600/600"/>
+          <span class="absolute inset-0 bg-primary/0 group-hover:bg-primary/20 transition-colors"></span>
+        </button>
+
+        <button class="gallery-item group relative overflow-hidden rounded-xl premium-shadow" data-full="https://picsum.photos/seed/dippe-portugal/900/900">
+          <img alt="Equipe Dippe Viagens em Portugal" class="w-full h-full aspect-square object-cover transition-transform duration-500 group-hover:scale-110" src="https://picsum.photos/seed/dippe-portugal/600/600"/>
+          <span class="absolute inset-0 bg-primary/0 group-hover:bg-primary/20 transition-colors"></span>
+        </button>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Lightbox: overlay de tela cheia para visualizar a foto da galeria em tamanho maior -->
+  <div id="gallery-lightbox" class="gallery-lightbox fixed inset-0 z-[100] bg-on-background/90 items-center justify-center p-margin-mobile">
+    <button id="gallery-lightbox-close" class="absolute top-margin-mobile right-margin-mobile text-on-primary" aria-label="Fechar imagem">
+      <span class="material-symbols-outlined text-[36px]">close</span>
+    </button>
+    <img id="gallery-lightbox-img" class="max-w-full max-h-full rounded-lg object-contain" alt=""/>
+  </div>
+
+  <!-- ==========================================================================
        DEPOIMENTOS
        ========================================================================== -->
   <section class="py-xl bg-mesh border-t border-outline-variant/20" id="depoimentos">
@@ -231,31 +303,88 @@
         <!-- Depoimento 1 -->
         <div class="bg-surface-container-lowest p-lg rounded-xl premium-shadow border border-outline-variant/20 flex flex-col justify-between">
           <p class="font-body-md text-body-md text-on-surface-variant italic mb-md">"A melhor experiência de viagem da minha vida. Tudo planejado nos mínimos detalhes, sem nenhuma preocupação. O suporte 24/7 fez toda a diferença quando precisamos mudar um horário."</p>
-          <div>
-            <h4 class="font-headline-md text-base text-primary font-bold">Mariana Silva</h4>
-            <p class="font-label-md text-xs text-secondary">Roteiro Itália Sob Medida</p>
+          <div class="flex items-center gap-sm">
+            <div class="w-12 h-12 flex-shrink-0 rounded-full overflow-hidden border-2 border-primary-fixed">
+              <img alt="Foto de Mariana Silva" class="w-full h-full object-cover" src="assets/img/fotodepoimento_mari.jpeg"/>
+            </div>
+            <div>
+              <h4 class="font-headline-md text-base text-primary font-bold">Mariana Silva</h4>
+              <p class="font-label-md text-xs text-secondary">Roteiro Itália Sob Medida</p>
+            </div>
           </div>
         </div>
 
         <!-- Depoimento 2 -->
         <div class="bg-surface-container-lowest p-lg rounded-xl premium-shadow border border-outline-variant/20 flex flex-col justify-between">
           <p class="font-body-md text-body-md text-on-surface-variant italic mb-md">"Eles entenderam exatamente o que queríamos. Foi como viajar com as dicas de um melhor amigo especialista. Recomendo de olhos fechados e já estou planejando a próxima!"</p>
-          <div>
-            <h4 class="font-headline-md text-base text-primary font-bold">Lucas Rocha</h4>
-            <p class="font-label-md text-xs text-secondary">Lua de Mel nas Maldivas</p>
+          <div class="flex items-center gap-sm">
+            <div class="w-12 h-12 flex-shrink-0 rounded-full overflow-hidden border-2 border-primary-fixed">
+              <img alt="Foto de Lucas Rocha" class="w-full h-full object-cover" src="assets/img/fotodepoimento_lucas.jpeg"/>
+            </div>
+            <div>
+              <h4 class="font-headline-md text-base text-primary font-bold">Lucas Rocha</h4>
+              <p class="font-label-md text-xs text-secondary">Lua de Mel nas Maldivas</p>
+            </div>
           </div>
         </div>
 
         <!-- Depoimento 3 -->
         <div class="bg-surface-container-lowest p-lg rounded-xl premium-shadow border border-outline-variant/20 flex flex-col justify-between">
           <p class="font-body-md text-body-md text-on-surface-variant italic mb-md">"Excelente curadoria de hotéis e passeios. Economizamos tempo e tivemos acessos exclusivos que não conseguiríamos sozinhos. Profissionalismo e carinho impecáveis."</p>
-          <div>
-            <h4 class="font-headline-md text-base text-primary font-bold">Beatriz Costa</h4>
-            <p class="font-label-md text-xs text-secondary">Eurotrip Personalizada</p>
+          <div class="flex items-center gap-sm">
+            <div class="w-12 h-12 flex-shrink-0 rounded-full overflow-hidden border-2 border-primary-fixed">
+              <img alt="Foto de Beatriz Costa" class="w-full h-full object-cover" src="assets/img/fotodepoimento_beatriz.jpeg"/>
+            </div>
+            <div>
+              <h4 class="font-headline-md text-base text-primary font-bold">Beatriz Costa</h4>
+              <p class="font-label-md text-xs text-secondary">Eurotrip Personalizada</p>
+            </div>
           </div>
         </div>
 
       </div>
+
+      <!-- Card para o próprio cliente enviar seu depoimento -->
+      <div class="mt-xl max-w-2xl mx-auto bg-surface-container-lowest p-lg rounded-xl premium-shadow border border-outline-variant/20" id="depoimento-form-container">
+        <h3 class="font-headline-md text-headline-md text-primary mb-xs text-center">Já viajou com a gente?</h3>
+        <p class="font-body-md text-body-md text-on-surface-variant text-center mb-lg">Conte como foi sua experiência.</p>
+
+        <form id="depoimento-form" action="https://formsubmit.co/ajax/dippeviagens@gmail.com" method="POST" class="space-y-sm" accept-charset="UTF-8">
+          <input type="hidden" name="_subject" value="[SITE - DIPPE VIAGENS] Novo Depoimento de Cliente">
+          <input type="hidden" name="_captcha" value="false">
+          <input type="hidden" name="_template" value="table">
+
+          <!-- Nome + avatar de iniciais (atualiza em tempo real) e Viagem, lado a lado -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-sm">
+            <div class="flex flex-col gap-xs">
+              <label class="font-label-md text-label-md text-outline">Seu nome</label>
+              <div class="flex items-center gap-sm">
+                <div id="depoimento-avatar-preview" class="w-9 h-9 flex-shrink-0 rounded-full bg-primary-fixed flex items-center justify-center font-label-md text-label-md text-primary select-none" aria-hidden="true">
+                  --
+                </div>
+                <input class="w-full border-outline-variant/30 rounded-lg focus:ring-primary focus:border-primary p-sm" placeholder="Nome e sobrenome" type="text" name="nome" id="depoimento-nome" required/>
+              </div>
+            </div>
+            <div class="flex flex-col gap-xs">
+              <label class="font-label-md text-label-md text-outline">Viagem realizada</label>
+              <input class="w-full border-outline-variant/30 rounded-lg focus:ring-primary focus:border-primary p-sm" placeholder="Ex: Lua de Mel em Paris" type="text" name="viagem" required/>
+            </div>
+          </div>
+
+          <!-- Campo "oculto" que viaja junto no e-mail com as iniciais calculadas -->
+          <input type="hidden" name="iniciais" id="depoimento-iniciais-hidden" value="">
+
+          <div class="flex flex-col gap-xs">
+            <label class="font-label-md text-label-md text-outline">Seu depoimento</label>
+            <textarea class="w-full border-outline-variant/30 rounded-lg focus:ring-primary focus:border-primary p-sm resize-none" placeholder="Conte como foi sua experiência com a Dippe Viagens..." rows="2" name="depoimento" required></textarea>
+          </div>
+
+          <button id="depoimento-submit-btn" class="w-full py-md bg-primary text-on-primary font-headline-md text-headline-md rounded-lg hover:bg-primary-container transition-all shadow-lg flex justify-center items-center gap-sm" type="submit">
+            <span>Enviar Depoimento</span>
+          </button>
+        </form>
+      </div>
+
     </div>
   </section>
 

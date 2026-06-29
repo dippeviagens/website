@@ -63,3 +63,36 @@ body {
 .hamburger-icon.is-open {
   transform: rotate(90deg);
 }
+
+/* ==========================================================================
+   Galeria de fotos
+   ========================================================================== */
+.gallery-item {
+  display: block;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+  text-align: left;
+}
+
+.gallery-item:focus-visible {
+  outline: 3px solid #2dbcfe;
+  outline-offset: 2px;
+}
+
+.gallery-lightbox {
+  display: none;
+  animation: gallery-fade-in 0.2s ease;
+}
+
+.gallery-lightbox.is-open {
+  display: flex;
+}
+
+@keyframes gallery-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}

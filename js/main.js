@@ -166,11 +166,142 @@ function initConsultoriaForm() {
   });
 }
 
+/**
+ * Envio do formulário "Já viajou com a gente?" (depoimentos enviados pelos
+ * próprios clientes), via FormSubmit. Funciona igual ao formulário de
+ * consultoria: mostra mensagem de sucesso/erro no próprio card.
+ */
+function initDepoimentoForm() {
+  const depoimentoForm = document.getElementById('depoimento-form');
+  if (!depoimentoForm) return;
+
+  depoimentoForm.addEventListener('submit', async function (e) {
+    e.preventDefault();
+
+    const btn = document.getElementById('depoimento-submit-btn');
+    const container = document.getElementById('depoimento-form-container');
+
+    btn.disabled = true;
+    btn.innerHTML = '<span>Enviando...</span>';
+
+    const formData = new FormData(this);
+
+    try {
+      const response = await fetch(this.action, {
+        method: 'POST',
+        body: formData,
+        headers: { Accept: 'application/json' },
+      });
+
+      const data = await response.json().catch(() => null);
+
+      if (response.ok && data && (data.success === true || data.success === 'true')) {
+        container.innerHTML = `
+          <div class="text-center py-md flex flex-col items-center gap-sm">
+            <span class="material-symbols-outlined text-[56px] text-secondary-container">check_circle</span>
+            <h3 class="font-headline-md text-headline-md text-primary mt-sm">Obrigado pelo depoimento!</h3>
+            <p class="font-body-md text-body-md text-on-surface-variant max-w-xs mx-auto">
+              Recebemos sua mensagem. Após uma rápida revisão, seu depoimento pode aparecer aqui na página.
+            </p>
+          </div>
+        `;
+      } else {
+        console.error('Resposta do FormSubmit:', data);
+        alert(
+          'Ops! Ocorreu um erro ao enviar. Se for a primeira vez usando este formulário, verifique a caixa de entrada (e spam) do e-mail dippeviagens@gmail.com para confirmar a ativação do FormSubmit.'
+        );
+        btn.disabled = false;
+        btn.innerHTML = '<span>Enviar Depoimento</span>';
+      }
+    } catch (error) {
+      alert('Erro de conexão. Verifique sua internet e tente novamente.');
+      btn.disabled = false;
+      btn.innerHTML = '<span>Enviar Depoimento</span>';
+    }
+  });
+}
+
+/**
+ * Calcula as iniciais de um nome completo (ex: "Mariana Silva" -> "MS").
+ * Usa a primeira letra do primeiro nome e a primeira letra do último nome.
+ * Se só houver um nome, usa as duas primeiras letras dele.
+ */
+function getIniciais(nomeCompleto) {
+  const partes = nomeCompleto.trim().split(/\s+/).filter(Boolean);
+  if (partes.length === 0) return '--';
+  if (partes.length === 1) return partes[0].slice(0, 2).toUpperCase();
+  const primeira = partes[0][0];
+  const ultima = partes[partes.length - 1][0];
+  return (primeira + ultima).toUpperCase();
+}
+
+/**
+ * Atualiza o avatar de pré-visualização (bolinha com as iniciais) conforme
+ * o cliente digita o nome no formulário de depoimento. Também guarda o
+ * valor calculado num campo escondido, para que as iniciais cheguem
+ * prontas no e-mail recebido via FormSubmit.
+ */
+function initDepoimentoAvatarPreview() {
+  const nomeInput = document.getElementById('depoimento-nome');
+  const avatarPreview = document.getElementById('depoimento-avatar-preview');
+  const iniciaisHidden = document.getElementById('depoimento-iniciais-hidden');
+
+  if (!nomeInput || !avatarPreview || !iniciaisHidden) return;
+
+  nomeInput.addEventListener('input', () => {
+    const iniciais = getIniciais(nomeInput.value);
+    avatarPreview.textContent = iniciais;
+    iniciaisHidden.value = iniciais;
+  });
+}
+
 // ---- Inicialização: dispara todas as funções quando o DOM estiver pronto ----
+function initGallery() {
+  const items = document.querySelectorAll('.gallery-item');
+  const lightbox = document.getElementById('gallery-lightbox');
+  const lightboxImg = document.getElementById('gallery-lightbox-img');
+  const closeBtn = document.getElementById('gallery-lightbox-close');
+
+  if (!items.length || !lightbox || !lightboxImg || !closeBtn) return;
+
+  function openLightbox(src, alt) {
+    lightboxImg.src = src;
+    lightboxImg.alt = alt;
+    lightbox.classList.add('is-open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeLightbox() {
+    lightbox.classList.remove('is-open');
+    lightboxImg.src = '';
+    document.body.style.overflow = '';
+  }
+
+  items.forEach((item) => {
+    item.addEventListener('click', () => {
+      const img = item.querySelector('img');
+      openLightbox(item.dataset.full || img.src, img.alt);
+    });
+  });
+
+  closeBtn.addEventListener('click', closeLightbox);
+
+  lightbox.addEventListener('click', (e) => {
+    if (e.target === lightbox) closeLightbox();
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && lightbox.classList.contains('is-open')) closeLightbox();
+  });
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   initSmoothScroll();
   initHeaderScrollShadow();
   initMobileMenu();
   initShareButton();
   initConsultoriaForm();
+  initDepoimentoForm();
+  initDepoimentoAvatarPreview();
+  initGallery(); // <- linha nova
 });

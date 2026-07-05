@@ -65,6 +65,21 @@ body {
 }
 
 /* ==========================================================================
+   Carrossel de depoimentos
+   ========================================================================== */
+#depoimentos-viewport {
+  cursor: grab;
+}
+
+#depoimentos-viewport:active {
+  cursor: grabbing;
+}
+
+#depoimentos-dots button {
+  background-color: #c3c6d1; /* outline-variant, fallback caso o Tailwind ainda não tenha aplicado */
+}
+
+/* ==========================================================================
    Galeria de fotos
    ========================================================================== */
 .gallery-item {
@@ -95,4 +110,66 @@ body {
 @keyframes gallery-fade-in {
   from { opacity: 0; }
   to { opacity: 1; }
+}
+
+/* ==========================================================================
+   Serviços — lista com marcador discreto (em vez do bullet padrão do navegador)
+   ========================================================================== */
+#services ul li {
+  position: relative;
+  padding-left: 1.1rem;
+}
+
+#services ul li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.55em;
+  width: 6px;
+  height: 6px;
+  border-radius: 9999px;
+  background-color: #2dbcfe;
+}
+
+/* ==========================================================================
+   Legenda da galeria (texto sobre a foto, visível ao passar o mouse)
+   ========================================================================== */
+.gallery-caption {
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
+}
+
+/* ==========================================================================
+   Guia do Viajante — painéis expansíveis como accordion inline.
+   O painel expande dentro do fluxo do card, sem sobrepor elementos abaixo.
+   ========================================================================== */
+.guia-panel {
+  animation: guia-fade-in 0.18s ease;
+}
+
+@keyframes guia-fade-in {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ==========================================================================
+   Drawer lateral
+   ========================================================================== */
+#side-drawer {
+  will-change: transform;
+}
+
+/* ==========================================================================
+   Cards de serviço — quadrados via aspect-ratio; bullets só aparecem
+   em telas sm+, para não poluir o card pequeno no mobile
+   ========================================================================== */
+#services .card-hover {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Remove os bullets customizados dentro dos cards quadrados
+   (os items ficam visíveis apenas em sm+ via "hidden sm:block") */
+#services ul li::before {
+  background-color: #2dbcfe;
+  width: 5px;
+  height: 5px;
 }

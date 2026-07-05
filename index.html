@@ -3,7 +3,24 @@
 <head>
   <meta charset="utf-8"/>
   <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-  <title>Dippe Viagens | Experiências de Viagem Premium</title>
+  <title>Dippe Viagens | Planejamento e Atendimento Personalizado de Viagens</title>
+
+  <!-- Segurança: impede que a página seja exibida em iframes (clickjacking) -->
+  <meta http-equiv="X-Frame-Options" content="DENY"/>
+  <!-- Segurança: impede sniffing de MIME type -->
+  <meta http-equiv="X-Content-Type-Options" content="nosniff"/>
+  <!-- Segurança: desativa referrer em links externos -->
+  <meta name="referrer" content="strict-origin-when-cross-origin"/>
+  <!-- Segurança: Content Security Policy — permite apenas recursos confiáveis -->
+  <meta http-equiv="Content-Security-Policy" content="
+    default-src 'self';
+    script-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com;
+    style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
+    font-src https://fonts.gstatic.com;
+    img-src 'self' data: https://images.unsplash.com https://picsum.photos https://lh3.googleusercontent.com https://assets.instagram.com;
+    connect-src 'self' https://formsubmit.co;
+    frame-ancestors 'none';
+  "/>
 
   <!-- Fontes e ícones -->
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
@@ -20,72 +37,145 @@
 
 <!-- ==========================================================================
      CABEÇALHO / NAVEGAÇÃO
+     Menu: mesmos itens no desktop (inline) e no mobile
+     (drawer).
      ========================================================================== -->
 <header class="sticky top-0 w-full z-50 bg-surface/80 backdrop-blur-xl border-b border-outline-variant/30 shadow-sm">
   <div class="flex items-center justify-between py-4 px-margin-mobile md:px-margin-desktop w-full max-w-7xl mx-auto">
 
-    <!-- Logo -->
-    <div class="flex-shrink-0">
+    <!-- Logo (também funciona como link para o Home) -->
+    <a href="#top" class="flex-shrink-0" aria-label="Dippe Viagens — Home">
       <img alt="Dippe Viagens" class="h-12 md:h-20 w-auto transition-transform hover:scale-105 duration-500" src="assets/img/logo_dippe.png"/>
-    </div>
+    </a>
 
-    <!-- Navegação (desktop) -->
-    <nav class="hidden md:flex items-center gap-xl">
-      <a class="font-label-md text-label-md text-primary active-nav-link" href="#top">Home</a>
-      <a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors cursor-pointer" href="#services">Serviços</a>
-      <a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors cursor-pointer" href="#about">Sobre Nós</a>
-      <a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors cursor-pointer" href="#galeria">Galeria</a>
-      <a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors cursor-pointer" href="#depoimentos">Depoimentos</a>
-      <a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors cursor-pointer" href="#contact">Contato</a>
+    <!-- Navegação principal (desktop) — Home, Serviços, Sobre Nós, Contato -->
+    <nav class="hidden md:flex items-center gap-lg">
+      <a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors" href="#top">Home</a>
+      <a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors" href="#services">Serviços</a>
+      <a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors" href="#about">Sobre Nós</a>
+      <a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors" href="#contact">Contato</a>
     </nav>
 
-    <!-- CTA (desktop) -->
-    <div class="hidden md:flex items-center">
-      <a class="px-md py-sm bg-primary text-on-primary font-label-md text-label-md rounded-lg hover:bg-primary-container transition-all cursor-pointer shadow-sm hover:shadow-md" href="#contact">Consultoria Grátis</a>
+    <!-- Lado direito: CTA + botão menu lateral (hambúrguer) -->
+    <div class="hidden md:flex items-center gap-md">
+      <a class="px-md py-sm bg-primary text-on-primary font-label-md text-label-md rounded-lg hover:bg-primary-container transition-all shadow-sm hover:shadow-md" href="#contact">Planejar Minha Viagem</a>
+      <button id="desktop-menu-button" class="text-primary hover:text-primary/70 transition-colors" aria-controls="side-drawer" aria-expanded="false" aria-label="Abrir menu lateral">
+        <span class="material-symbols-outlined text-[28px]">menu</span>
+      </button>
     </div>
 
-    <!-- Botão do menu mobile (hambúrguer) -->
-    <button id="mobile-menu-button" class="md:hidden text-primary" aria-controls="mobile-nav" aria-expanded="false" aria-label="Abrir menu">
+    <!-- Hambúrguer mobile (abre o drawer lateral) -->
+    <button id="mobile-menu-button" class="md:hidden text-primary" aria-controls="side-drawer" aria-expanded="false" aria-label="Abrir menu">
       <span id="mobile-menu-icon" class="material-symbols-outlined text-[32px] hamburger-icon">menu</span>
     </button>
   </div>
-
-  <!-- Painel do menu mobile: some por padrão, abre ao clicar no hambúrguer (ver js/main.js) -->
-  <nav id="mobile-nav" class="mobile-nav md:hidden border-t border-outline-variant/30 bg-surface">
-    <div class="flex flex-col gap-md px-margin-mobile py-md">
-      <a class="font-label-md text-label-md text-primary" href="#top">Home</a>
-      <a class="font-label-md text-label-md text-on-surface-variant" href="#services">Serviços</a>
-      <a class="font-label-md text-label-md text-on-surface-variant" href="#about">Sobre Nós</a>
-      <a class="font-label-md text-label-md text-on-surface-variant" href="#galeria">Galeria</a>
-      <a class="font-label-md text-label-md text-on-surface-variant" href="#depoimentos">Depoimentos</a>
-      <a class="font-label-md text-label-md text-on-surface-variant" href="#contact">Contato</a>
-      <a class="px-md py-sm bg-primary text-on-primary font-label-md text-label-md rounded-lg text-center" href="#contact">Consultoria Grátis</a>
-    </div>
-  </nav>
 </header>
+
+<!-- ==========================================================================
+     DRAWER LATERAL (slide-in da direita) — apenas mobile
+     Reflete exatamente os mesmos itens do menu desktop, mais o Home.
+     ========================================================================== -->
+<div id="drawer-overlay" class="fixed inset-0 z-[60] bg-on-background/40 opacity-0 pointer-events-none transition-opacity duration-300" aria-hidden="true"></div>
+<aside id="side-drawer" class="fixed top-0 right-0 h-full w-72 max-w-[85vw] z-[70] bg-surface shadow-2xl translate-x-full transition-transform duration-300 ease-out flex flex-col" aria-label="Menu de navegação" role="dialog">
+  <!-- Cabeçalho do drawer -->
+  <div class="flex items-center justify-between px-lg py-md border-b border-outline-variant/30">
+    <img alt="Dippe Viagens" class="h-10 w-auto" src="assets/img/logo_dippe.png"/>
+    <button id="drawer-close-btn" class="text-on-surface-variant hover:text-primary transition-colors" aria-label="Fechar menu">
+      <span class="material-symbols-outlined text-[28px]">close</span>
+    </button>
+  </div>
+  <!-- Links de navegação -->
+  <nav class="flex flex-col gap-xs px-lg py-lg flex-1 overflow-y-auto">
+    <a class="flex items-center gap-sm py-sm px-sm rounded-lg font-label-md text-label-md text-on-surface-variant hover:text-primary hover:bg-primary/5 transition-colors" href="#top">
+      <span class="material-symbols-outlined text-[20px]">home</span> Home
+    </a>
+    <a class="flex items-center gap-sm py-sm px-sm rounded-lg font-label-md text-label-md text-on-surface-variant hover:text-primary hover:bg-primary/5 transition-colors" href="#services">
+      <span class="material-symbols-outlined text-[20px]">luggage</span> Serviços
+    </a>
+    <a class="flex items-center gap-sm py-sm px-sm rounded-lg font-label-md text-label-md text-on-surface-variant hover:text-primary hover:bg-primary/5 transition-colors" href="centro-do-viajante.html">
+      <span class="material-symbols-outlined text-[20px]">explore</span> Centro do Viajante
+    </a>
+    <a class="flex items-center gap-sm py-sm px-sm rounded-lg font-label-md text-label-md text-on-surface-variant hover:text-primary hover:bg-primary/5 transition-colors" href="#como-funciona">
+      <span class="material-symbols-outlined text-[20px]">route</span> Como Funciona
+    </a>
+    <a class="flex items-center gap-sm py-sm px-sm rounded-lg font-label-md text-label-md text-on-surface-variant hover:text-primary hover:bg-primary/5 transition-colors" href="#about">
+      <span class="material-symbols-outlined text-[20px]">people</span> Sobre Nós
+    </a>
+    <a class="flex items-center gap-sm py-sm px-sm rounded-lg font-label-md text-label-md text-on-surface-variant hover:text-primary hover:bg-primary/5 transition-colors" href="#contact">
+      <span class="material-symbols-outlined text-[20px]">mail</span> Contato
+    </a>
+  </nav>
+  <!-- CTA no rodapé do drawer -->
+  <div class="px-lg py-md border-t border-outline-variant/30">
+    <a class="block w-full text-center px-md py-md bg-primary text-on-primary font-label-md text-label-md rounded-lg hover:bg-primary-container transition-all shadow-sm" href="#contact">Planejar Minha Viagem</a>
+  </div>
+</aside>
 
 <main>
 
   <!-- ==========================================================================
        HERO
        ========================================================================== -->
-  <section class="relative h-[85vh] w-full flex items-center justify-center overflow-hidden">
+  <section class="relative min-h-[85vh] w-full flex items-center overflow-hidden" style="background-color: #001e40;">
+    <!-- Foto de alta qualidade: bangalôs sobre água turquesa (Unsplash, licença gratuita) -->
     <div class="absolute inset-0 z-0">
-      <div class="w-full h-full bg-cover bg-center scale-105 transition-transform duration-[10000ms] ease-out" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAKLpUk0ZKm3tiBBHsu2-5naZw61honboer19vhrc99k0R8QUOZe3VUiHClSK1HhRvTkx33w27KwRoodiYrZEsyEhyeq67vncSBlPU5yN_dhaknwLOhc9XrVhxTe7HDl7mVNlu3lqpr6R0KM7B_DNQZyQCLB2YVkwWtW3aDvoeR4kEdNTItgmE1Df1dpQqsVAG6vZi5kLvbWDS_aEGB53lDix5D3ZoJwAvDeWYvmiW87EjDJQCofQibtiyRbcpp2pBu1XOeNSxKhw')"></div>
-      <div class="absolute inset-0 bg-gradient-to-r from-primary/60 via-primary/20 to-transparent"></div>
+      <div class="w-full h-full bg-cover bg-right-center scale-105 transition-transform duration-[10000ms] ease-out"
+           style="background-image: url('https://images.unsplash.com/photo-1590523277543-a94d2e4eb00b?w=2000&q=90&auto=format&fit=crop'); background-position: center right;"></div>
+
+      <!-- Desktop: azul marinho forte à esquerda (onde fica o texto), transparente à direita -->
+      <div class="absolute inset-0 hidden md:block"
+           style="background: linear-gradient(to right,
+             #001e40 0%,
+             #001e40 35%,
+             rgba(0,30,64,0.6) 55%,
+             rgba(0,30,64,0.0) 80%
+           );"></div>
+
+      <!-- Mobile: azul marinho cobrindo 70% de cima, transparente em baixo para ver a paisagem -->
+      <div class="absolute inset-0 md:hidden"
+           style="background: linear-gradient(to bottom,
+             rgba(0,30,64,0.95) 0%,
+             rgba(0,30,64,0.90) 60%,
+             rgba(0,30,64,0.5) 80%,
+             rgba(0,30,64,0.1) 100%
+           );"></div>
     </div>
-    <div class="relative z-10 w-full max-w-7xl mx-auto px-margin-mobile md:px-margin-desktop">
-      <div class="max-w-3xl text-on-primary">
-        <h1 class="font-headline-lg-mobile text-headline-lg-mobile md:font-display-lg md:text-display-lg mb-md leading-tight">A Arte de Viajar sem <span class="text-secondary-container">Estresse.</span></h1>
-        <p class="font-body-md text-body-md md:font-body-lg md:text-body-lg mb-lg opacity-90 max-w-md">Desenhamos roteiros exclusivos que transformam destinos globais em memórias eternas, cuidando de cada detalhe da sua próxima jornada.</p>
+
+    <div class="relative z-10 w-full max-w-7xl mx-auto px-margin-mobile md:px-margin-desktop py-xl">
+      <!-- Conteúdo restrito à metade esquerda no desktop -->
+      <div class="w-full md:max-w-[55%] text-white">
+        <h1 class="font-headline-lg-mobile text-headline-lg-mobile md:font-display-lg md:text-display-lg mb-md leading-tight">
+          Você escolhe o destino. <span style="color: #7dd4fc;">Nós cuidamos de todo o resto.</span>
+        </h1>
+        <p class="font-body-md text-body-md md:font-body-lg md:text-body-lg mb-lg opacity-90 max-w-md">Relaxa. Passagem, hospedagem, seguro e toda a papelada ficam por nossa conta, do início ao fim.</p>
         <div class="flex flex-wrap gap-md">
-          <a href="#depoimentos" class="px-xl py-md bg-white text-primary font-label-md text-label-md rounded-lg shadow-xl hover:bg-surface-variant transition-all text-center">Ver Depoimentos</a>
+          <a href="#contact" class="px-xl py-md bg-white text-primary font-label-md text-label-md rounded-lg shadow-xl hover:bg-surface-variant transition-all text-center">Planejar Minha Viagem</a>
+          <a href="centro-do-viajante.html" class="px-xl py-md border border-white/50 text-white font-label-md text-label-md rounded-lg hover:bg-white/10 transition-all text-center">Centro do Viajante</a>
+        </div>
+
+        <!-- Linha de diferenciais abaixo dos botões -->
+        <div class="mt-lg pt-lg border-t border-white/15 grid grid-cols-2 sm:grid-cols-4 gap-x-lg gap-y-md">
+          <div class="flex items-center gap-sm">
+            <span class="material-symbols-outlined flex-shrink-0 text-[22px]" style="color: #7dd4fc;">groups</span>
+            <span class="text-white text-xs font-medium leading-tight">Atendimento personalizado</span>
+          </div>
+          <div class="flex items-center gap-sm">
+            <span class="material-symbols-outlined flex-shrink-0 text-[22px]" style="color: #7dd4fc;">verified_user</span>
+            <span class="text-white text-xs font-medium leading-tight">Acompanhamento do início ao fim</span>
+          </div>
+          <div class="flex items-center gap-sm">
+            <span class="material-symbols-outlined flex-shrink-0 text-[22px]" style="color: #7dd4fc;">workspace_premium</span>
+            <span class="text-white text-xs font-medium leading-tight">Experiência e confiança</span>
+          </div>
+          <div class="flex items-center gap-sm">
+            <span class="material-symbols-outlined flex-shrink-0 text-[22px]" style="color: #7dd4fc;">support_agent</span>
+            <span class="text-white text-xs font-medium leading-tight">Suporte antes, durante e após a viagem</span>
+          </div>
         </div>
       </div>
     </div>
-    <!-- Esmaecimento inferior para transição suave com a próxima seção -->
-    <div class="absolute bottom-0 w-full h-32 bg-gradient-to-t from-background to-transparent"></div>
   </section>
+
 
   <!-- ==========================================================================
        SERVIÇOS
@@ -94,37 +184,146 @@
     <div class="max-w-7xl mx-auto px-margin-mobile md:px-margin-desktop">
       <div class="text-center mb-xl">
         <span class="text-secondary font-label-md text-label-md tracking-widest uppercase">Excelência em Cada Detalhe</span>
-        <h2 class="font-headline-lg text-headline-lg text-primary mt-sm">Experiências Sob Medida</h2>
+        <h2 class="font-headline-lg text-headline-lg text-primary mt-sm">Nossos Serviços</h2>
+        <p class="font-body-md text-body-md text-on-surface-variant mt-sm max-w-2xl mx-auto">Você decide para onde vai. A gente cuida de tudo o que torna a viagem possível.</p>
       </div>
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-gutter">
+      <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-gutter">
 
-        <!-- Serviço 1: Burocracia -->
-        <div class="group bg-surface-container-lowest p-lg rounded-xl premium-shadow border border-outline-variant/20 card-hover transition-all duration-300">
-          <div class="w-16 h-16 rounded-xl bg-secondary-fixed flex items-center justify-center mb-md group-hover:bg-primary transition-colors">
-            <span class="material-symbols-outlined text-secondary group-hover:text-on-primary text-[32px]">flight_takeoff</span>
+        <!-- Serviço 1: Passagens & Vistos -->
+        <div class="group bg-surface-container-lowest p-lg rounded-2xl premium-shadow border border-outline-variant/20 card-hover transition-all duration-300 flex flex-col gap-md">
+          <div class="w-14 h-14 rounded-xl bg-secondary-fixed flex items-center justify-center group-hover:bg-primary transition-colors flex-shrink-0">
+            <span class="material-symbols-outlined text-secondary group-hover:text-on-primary text-[28px]">flight_takeoff</span>
           </div>
-          <h3 class="font-headline-md text-headline-md text-primary mb-sm">Burocracia</h3>
-          <p class="font-body-md text-body-md text-on-surface-variant">Assessoria completa para emissão de passagens aéreas, passaportes, vistos internacionais, autorizações eletrônicas e seguros viagem. Cuidamos de toda a burocracia para você viajar sem preocupações.</p>
+          <div>
+            <h3 class="font-headline-md text-base text-primary font-bold leading-tight mb-sm">Passagens &amp; Vistos</h3>
+            <ul class="font-body-md text-sm text-on-surface-variant space-y-xs">
+              <li>Passagens aéreas</li>
+              <li>Visto americano (DS-160)</li>
+              <li>Vistos internacionais</li>
+              <li>Autorizações eletrônicas</li>
+            </ul>
+          </div>
         </div>
 
-        <!-- Serviço 2: Hospedagem -->
-        <div class="group bg-surface-container-lowest p-lg rounded-xl premium-shadow border border-outline-variant/20 card-hover transition-all duration-300">
-          <div class="w-16 h-16 rounded-xl bg-secondary-fixed flex items-center justify-center mb-md group-hover:bg-primary transition-colors">
-            <span class="material-symbols-outlined text-secondary group-hover:text-on-primary text-[32px]">hotel</span>
+        <!-- Serviço 2: Documentação -->
+        <div class="group bg-surface-container-lowest p-lg rounded-2xl premium-shadow border border-outline-variant/20 card-hover transition-all duration-300 flex flex-col gap-md">
+          <div class="w-14 h-14 rounded-xl bg-secondary-fixed flex items-center justify-center group-hover:bg-primary transition-colors flex-shrink-0">
+            <span class="material-symbols-outlined text-secondary group-hover:text-on-primary text-[28px]">badge</span>
           </div>
-          <h3 class="font-headline-md text-headline-md text-primary mb-sm">Hospedagem</h3>
-          <p class="font-body-md text-body-md text-on-surface-variant">Reserva de hotéis, resorts e aluguel de carros ao redor do mundo. Garantimos conforto, segurança e os melhores benefícios para a sua estadia.</p>
+          <div>
+            <h3 class="font-headline-md text-base text-primary font-bold leading-tight mb-sm">Documentação</h3>
+            <ul class="font-body-md text-sm text-on-surface-variant space-y-xs">
+              <li>Passaporte brasileiro</li>
+              <li>Do agendamento à retirada</li>
+            </ul>
+          </div>
         </div>
 
-        <!-- Serviço 3: Estratégia de milhas -->
-        <div class="group bg-surface-container-lowest p-lg rounded-xl premium-shadow border border-outline-variant/20 card-hover transition-all duration-300">
-          <div class="w-16 h-16 rounded-xl bg-secondary-fixed flex items-center justify-center mb-md group-hover:bg-primary transition-colors">
-            <span class="material-symbols-outlined text-secondary group-hover:text-on-primary text-[32px]">public</span>
+        <!-- Serviço 3: Hospedagem & Carro -->
+        <div class="group bg-surface-container-lowest p-lg rounded-2xl premium-shadow border border-outline-variant/20 card-hover transition-all duration-300 flex flex-col gap-md">
+          <div class="w-14 h-14 rounded-xl bg-secondary-fixed flex items-center justify-center group-hover:bg-primary transition-colors flex-shrink-0">
+            <span class="material-symbols-outlined text-secondary group-hover:text-on-primary text-[28px]">hotel</span>
           </div>
-          <h3 class="font-headline-md text-headline-md text-primary mb-sm">Estratégia de milhas</h3>
-          <p class="font-body-md text-body-md text-on-surface-variant">Otimização de milhas e cartões de crédito para maximizar suas viagens, combinada com o planejamento de roteiros 100% personalizados de acordo com o seu perfil.</p>
+          <div>
+            <h3 class="font-headline-md text-base text-primary font-bold leading-tight mb-sm">Hospedagem &amp; Carro</h3>
+            <ul class="font-body-md text-sm text-on-surface-variant space-y-xs">
+              <li>Hotéis e resorts</li>
+              <li>Aluguel de carro</li>
+              <li>Seguro viagem</li>
+            </ul>
+          </div>
         </div>
 
+        <!-- Serviço 4: Milhas & Estratégia -->
+        <div class="group bg-surface-container-lowest p-lg rounded-2xl premium-shadow border border-outline-variant/20 card-hover transition-all duration-300 flex flex-col gap-md">
+          <div class="w-14 h-14 rounded-xl bg-secondary-fixed flex items-center justify-center group-hover:bg-primary transition-colors flex-shrink-0">
+            <span class="material-symbols-outlined text-secondary group-hover:text-on-primary text-[28px]">stars</span>
+          </div>
+          <div>
+            <h3 class="font-headline-md text-base text-primary font-bold leading-tight mb-sm">Milhas &amp; Estratégia</h3>
+            <ul class="font-body-md text-sm text-on-surface-variant space-y-xs">
+              <li>Otimização de milhas</li>
+              <li>Cartões de crédito</li>
+              <li>Consultoria de perfil</li>
+            </ul>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       COMO FUNCIONA
+       Linha do tempo explicando o processo de atendimento, do primeiro
+       contato até a viagem em si. Reduz a fricção de quem nunca usou um
+       serviço de planejamento de viagens.
+       ========================================================================== -->
+  <section class="py-xl bg-background" id="como-funciona">
+    <div class="max-w-7xl mx-auto px-margin-mobile md:px-margin-desktop">
+      <div class="text-center mb-xl">
+        <span class="text-secondary font-label-md text-label-md tracking-widest uppercase">Do Primeiro Contato à Viagem</span>
+        <h2 class="font-headline-lg text-headline-lg text-primary mt-sm">Como Funciona</h2>
+        <p class="font-body-md text-body-md text-on-surface-variant mt-sm max-w-2xl mx-auto">Um processo simples, transparente e acompanhado por pessoas reais em cada etapa.</p>
+      </div>
+
+      <div class="relative grid grid-cols-1 md:grid-cols-6 gap-lg md:gap-md">
+        <!-- Linha conectora (somente desktop) -->
+        <div class="hidden md:block absolute top-8 left-[8.33%] right-[8.33%] h-0.5 bg-outline-variant/40"></div>
+
+        <!-- Passo 1 -->
+        <div class="relative flex flex-col items-center text-center gap-sm">
+          <div class="relative z-10 w-16 h-16 rounded-full bg-primary text-on-primary flex items-center justify-center">
+            <span class="material-symbols-outlined text-[28px]">chat</span>
+          </div>
+          <h3 class="font-headline-md text-base text-primary font-bold">1. Contato</h3>
+          <p class="font-body-md text-body-md text-on-surface-variant">Você entra em contato com a gente.</p>
+        </div>
+
+        <!-- Passo 2 -->
+        <div class="relative flex flex-col items-center text-center gap-sm">
+          <div class="relative z-10 w-16 h-16 rounded-full bg-primary text-on-primary flex items-center justify-center">
+            <span class="material-symbols-outlined text-[28px]">forum</span>
+          </div>
+          <h3 class="font-headline-md text-base text-primary font-bold">2. Conversa</h3>
+          <p class="font-body-md text-body-md text-on-surface-variant">Conversamos sobre como você imagina sua viagem.</p>
+        </div>
+
+        <!-- Passo 3 -->
+        <div class="relative flex flex-col items-center text-center gap-sm">
+          <div class="relative z-10 w-16 h-16 rounded-full bg-primary text-on-primary flex items-center justify-center">
+            <span class="material-symbols-outlined text-[28px]">map</span>
+          </div>
+          <h3 class="font-headline-md text-base text-primary font-bold">3. Planejamento</h3>
+          <p class="font-body-md text-body-md text-on-surface-variant">Planejamos todos os detalhes da viagem.</p>
+        </div>
+
+        <!-- Passo 4 -->
+        <div class="relative flex flex-col items-center text-center gap-sm">
+          <div class="relative z-10 w-16 h-16 rounded-full bg-primary text-on-primary flex items-center justify-center">
+            <span class="material-symbols-outlined text-[28px]">thumb_up</span>
+          </div>
+          <h3 class="font-headline-md text-base text-primary font-bold">4. Aprovação</h3>
+          <p class="font-body-md text-body-md text-on-surface-variant">Você revisa e aprova cada etapa do plano.</p>
+        </div>
+
+        <!-- Passo 5 -->
+        <div class="relative flex flex-col items-center text-center gap-sm">
+          <div class="relative z-10 w-16 h-16 rounded-full bg-primary text-on-primary flex items-center justify-center">
+            <span class="material-symbols-outlined text-[28px]">task_alt</span>
+          </div>
+          <h3 class="font-headline-md text-base text-primary font-bold">5. Organização</h3>
+          <p class="font-body-md text-body-md text-on-surface-variant">Organizamos toda a parte burocrática da viagem.</p>
+        </div>
+
+        <!-- Passo 6 -->
+        <div class="relative flex flex-col items-center text-center gap-sm">
+          <div class="relative z-10 w-16 h-16 rounded-full bg-primary text-on-primary flex items-center justify-center">
+            <span class="material-symbols-outlined text-[28px]">flight</span>
+          </div>
+          <h3 class="font-headline-md text-base text-primary font-bold">6. Viagem</h3>
+          <p class="font-body-md text-body-md text-on-surface-variant">Você viaja com tranquilidade e suporte da nossa equipe.</p>
+        </div>
       </div>
     </div>
   </section>
@@ -210,7 +409,7 @@
           </div>
           <div class="text-center md:text-left xl:text-center">
             <h3 class="font-headline-md text-headline-md text-primary">Larissa Nobrega</h3>
-            <p class="font-label-md text-label-md text-secondary mb-sm">Diretora de Marketing</p>
+            <p class="font-label-md text-label-md text-secondary mb-sm">Dev Web & Marketing Digital</p>
             <p class="font-body-md text-body-md text-on-surface-variant">Larissa é especialista em criar estratégias de marketing que impulsionam o crescimento da empresa.</p>
           </div>
         </div>
@@ -221,60 +420,70 @@
 
   <!-- ==========================================================================
        GALERIA DE FOTOS
-       Mostra a equipe em viagem (bastidores, destinos, atendimento) para criar
-       conexão e credibilidade. Clique numa foto para abrir em tamanho maior
-       (ver initGallery() em js/main.js).
-       Fotos fictícias (placeholder) — troque os "src" pelas fotos reais.
+       Mostra a equipe em viagem e nos bastidores do atendimento, para criar
+       conexão e credibilidade. Cada foto tem uma legenda curta e visível
+       (não apenas "alt"), que aparece sobre a imagem. Clique numa foto para
+       abrir em tamanho maior (ver initGallery() em js/main.js).
+       Fotos fictícias (placeholder) — troque os "src" pelas fotos reais e
+       ajuste as legendas em "data-caption" conforme o conteúdo real.
        ========================================================================== -->
   <section class="py-xl bg-mesh border-t border-outline-variant/20" id="galeria">
     <div class="max-w-7xl mx-auto px-margin-mobile md:px-margin-desktop">
       <div class="text-center mb-xl">
         <span class="text-secondary font-label-md text-label-md tracking-widest uppercase">Bastidores Dippe</span>
-        <h2 class="font-headline-lg text-headline-lg text-primary mt-sm">Nossa Galeria de Fotos</h2>
-        <p class="font-body-md text-body-md text-on-surface-variant mt-sm max-w-2xl mx-auto">Cada viagem que planejamos para você passa antes pela nossa própria experiência nesses destinos.</p>
+        <h2 class="font-headline-lg text-headline-lg text-primary mt-sm">Quem Cuida da Sua Viagem</h2>
+        <p class="font-body-md text-body-md text-on-surface-variant mt-sm max-w-2xl mx-auto">Conheça a equipe que vai planejar sua próxima viagem — gente que ama viajar e ama cuidar de cada detalhe para você.</p>
       </div>
 
       <!-- Grade uniforme: 2 colunas no celular, 3 no tablet, 4 no desktop. Todas as fotos no mesmo tamanho (aspecto quadrado) para evitar buracos no grid. -->
       <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-sm md:gap-md">
 
-        <button class="gallery-item group relative overflow-hidden rounded-xl premium-shadow" data-full="https://picsum.photos/seed/dippe-santorini/900/900">
-          <img alt="Equipe Dippe Viagens em Santorini, Grécia" class="w-full h-full aspect-square object-cover transition-transform duration-500 group-hover:scale-110" src="https://picsum.photos/seed/dippe-santorini/600/600"/>
-          <span class="absolute inset-0 bg-primary/0 group-hover:bg-primary/20 transition-colors"></span>
+        <button class="gallery-item group relative overflow-hidden rounded-xl premium-shadow" data-full="assets/img/dippe1.jpeg/900/900" data-caption="">
+          <img alt="" class="w-full h-full aspect-square object-cover transition-transform duration-500 group-hover:scale-110" src="assets/img/dippe1.jpeg/600/600"/>
+          <span class="absolute inset-0 bg-gradient-to-t from-primary/80 via-primary/0 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></span>
+          <span class="gallery-caption absolute bottom-0 left-0 right-0 p-sm text-on-primary font-label-md text-label-md opacity-0 group-hover:opacity-100 transition-opacity"></span>
         </button>
 
-        <button class="gallery-item group relative overflow-hidden rounded-xl premium-shadow" data-full="https://picsum.photos/seed/dippe-paris/900/900">
-          <img alt="Felippe em viagem de trabalho em Paris" class="w-full h-full aspect-square object-cover transition-transform duration-500 group-hover:scale-110" src="https://picsum.photos/seed/dippe-paris/600/600"/>
-          <span class="absolute inset-0 bg-primary/0 group-hover:bg-primary/20 transition-colors"></span>
+        <button class="gallery-item group relative overflow-hidden rounded-xl premium-shadow" data-full="assets/img/dippe2.jpeg/900/900" data-caption="">
+          <img alt="" class="w-full h-full aspect-square object-cover transition-transform duration-500 group-hover:scale-110" src="assets/img/dippe2.jpeg/600/600"/>
+          <span class="absolute inset-0 bg-gradient-to-t from-primary/80 via-primary/0 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></span>
+          <span class="gallery-caption absolute bottom-0 left-0 right-0 p-sm text-on-primary font-label-md text-label-md opacity-0 group-hover:opacity-100 transition-opacity"></span>
         </button>
 
-        <button class="gallery-item group relative overflow-hidden rounded-xl premium-shadow" data-full="https://picsum.photos/seed/dippe-maldivas/900/900">
-          <img alt="Diogo conhecendo hotel parceiro nas Maldivas" class="w-full h-full aspect-square object-cover transition-transform duration-500 group-hover:scale-110" src="https://picsum.photos/seed/dippe-maldivas/600/600"/>
-          <span class="absolute inset-0 bg-primary/0 group-hover:bg-primary/20 transition-colors"></span>
+        <button class="gallery-item group relative overflow-hidden rounded-xl premium-shadow" data-full="assets/img/dippe3.jpeg/900/900" data-caption="">
+          <img alt="" class="w-full h-full aspect-square object-cover transition-transform duration-500 group-hover:scale-110" src="assets/img/dippe3.jpeg/600/600"/>
+          <span class="absolute inset-0 bg-gradient-to-t from-primary/80 via-primary/0 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></span>
+          <span class="gallery-caption absolute bottom-0 left-0 right-0 p-sm text-on-primary font-label-md text-label-md opacity-0 group-hover:opacity-100 transition-opacity"></span>
         </button>
 
-        <button class="gallery-item group relative overflow-hidden rounded-xl premium-shadow" data-full="https://picsum.photos/seed/dippe-italia/900/900">
-          <img alt="Larissa registrando bastidores de viagem na Itália" class="w-full h-full aspect-square object-cover transition-transform duration-500 group-hover:scale-110" src="https://picsum.photos/seed/dippe-italia/600/600"/>
-          <span class="absolute inset-0 bg-primary/0 group-hover:bg-primary/20 transition-colors"></span>
+        <button class="gallery-item group relative overflow-hidden rounded-xl premium-shadow" data-full="assets/img/dippe4.jpeg/900/900" data-caption="">
+          <img alt="" class="w-full h-full aspect-square object-cover transition-transform duration-500 group-hover:scale-110" src="assets/img/dippe4.jpeg/600/600"/>
+          <span class="absolute inset-0 bg-gradient-to-t from-primary/80 via-primary/0 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></span>
+          <span class="gallery-caption absolute bottom-0 left-0 right-0 p-sm text-on-primary font-label-md text-label-md opacity-0 group-hover:opacity-100 transition-opacity"></span>
         </button>
 
-        <button class="gallery-item group relative overflow-hidden rounded-xl premium-shadow" data-full="https://picsum.photos/seed/dippe-japao/900/900">
-          <img alt="Equipe Dippe Viagens em viagem de reconhecimento no Japão" class="w-full h-full aspect-square object-cover transition-transform duration-500 group-hover:scale-110" src="https://picsum.photos/seed/dippe-japao/600/600"/>
-          <span class="absolute inset-0 bg-primary/0 group-hover:bg-primary/20 transition-colors"></span>
+        <button class="gallery-item group relative overflow-hidden rounded-xl premium-shadow" data-full="assets/img/dippe5.jpeg/900/900" data-caption="">
+          <img alt="" class="w-full h-full aspect-square object-cover transition-transform duration-500 group-hover:scale-110" src="assets/img/dippe5.jpeg/600/600"/>
+          <span class="absolute inset-0 bg-gradient-to-t from-primary/80 via-primary/0 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></span>
+          <span class="gallery-caption absolute bottom-0 left-0 right-0 p-sm text-on-primary font-label-md text-label-md opacity-0 group-hover:opacity-100 transition-opacity"></span>
         </button>
 
-        <button class="gallery-item group relative overflow-hidden rounded-xl premium-shadow" data-full="https://picsum.photos/seed/dippe-atendimento/900/900">
-          <img alt="Bastidores de atendimento personalizado a clientes" class="w-full h-full aspect-square object-cover transition-transform duration-500 group-hover:scale-110" src="https://picsum.photos/seed/dippe-atendimento/600/600"/>
-          <span class="absolute inset-0 bg-primary/0 group-hover:bg-primary/20 transition-colors"></span>
+        <button class="gallery-item group relative overflow-hidden rounded-xl premium-shadow" data-full="assets/img/dippe6.jpeg/900/900" data-caption="">
+          <img alt="" class="w-full h-full aspect-square object-cover transition-transform duration-500 group-hover:scale-110" src="assets/img/dippe6.jpeg/600/600"/>
+          <span class="absolute inset-0 bg-gradient-to-t from-primary/80 via-primary/0 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></span>
+          <span class="gallery-caption absolute bottom-0 left-0 right-0 p-sm text-on-primary font-label-md text-label-md opacity-0 group-hover:opacity-100 transition-opacity"></span>
         </button>
 
-        <button class="gallery-item group relative overflow-hidden rounded-xl premium-shadow" data-full="https://picsum.photos/seed/dippe-grecia2/900/900">
-          <img alt="Bastidores de viagem na Grécia" class="w-full h-full aspect-square object-cover transition-transform duration-500 group-hover:scale-110" src="https://picsum.photos/seed/dippe-grecia2/600/600"/>
-          <span class="absolute inset-0 bg-primary/0 group-hover:bg-primary/20 transition-colors"></span>
+        <button class="gallery-item group relative overflow-hidden rounded-xl premium-shadow" data-full="assets/img/dippe7.jpeg/900/900" data-caption="">
+          <img alt="" class="w-full h-full aspect-square object-cover transition-transform duration-500 group-hover:scale-110" src="assets/img/dippe7.jpeg/600/600"/>
+          <span class="absolute inset-0 bg-gradient-to-t from-primary/80 via-primary/0 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></span>
+          <span class="gallery-caption absolute bottom-0 left-0 right-0 p-sm text-on-primary font-label-md text-label-md opacity-0 group-hover:opacity-100 transition-opacity"></span>
         </button>
 
-        <button class="gallery-item group relative overflow-hidden rounded-xl premium-shadow" data-full="https://picsum.photos/seed/dippe-portugal/900/900">
-          <img alt="Equipe Dippe Viagens em Portugal" class="w-full h-full aspect-square object-cover transition-transform duration-500 group-hover:scale-110" src="https://picsum.photos/seed/dippe-portugal/600/600"/>
-          <span class="absolute inset-0 bg-primary/0 group-hover:bg-primary/20 transition-colors"></span>
+        <button class="gallery-item group relative overflow-hidden rounded-xl premium-shadow" data-full="assets/img/dippe8.jpeg/900/900" data-caption="">
+          <img alt="" class="w-full h-full aspect-square object-cover transition-transform duration-500 group-hover:scale-110" src="assets/img/dippe8.jpeg/600/600"/>
+          <span class="absolute inset-0 bg-gradient-to-t from-primary/80 via-primary/0 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></span>
+          <span class="gallery-caption absolute bottom-0 left-0 right-0 p-sm text-on-primary font-label-md text-label-md opacity-0 group-hover:opacity-100 transition-opacity"></span>
         </button>
 
       </div>
@@ -286,11 +495,14 @@
     <button id="gallery-lightbox-close" class="absolute top-margin-mobile right-margin-mobile text-on-primary" aria-label="Fechar imagem">
       <span class="material-symbols-outlined text-[36px]">close</span>
     </button>
-    <img id="gallery-lightbox-img" class="max-w-full max-h-full rounded-lg object-contain" alt=""/>
+    <div class="flex flex-col items-center gap-sm max-w-3xl">
+      <img id="gallery-lightbox-img" class="max-w-full max-h-[75vh] rounded-lg object-contain" alt=""/>
+      <p id="gallery-lightbox-caption" class="font-body-md text-body-md text-on-primary text-center"></p>
+    </div>
   </div>
 
   <!-- ==========================================================================
-       DEPOIMENTOS
+       DEPOIMENTOS — 3 cards, 1 por vez, slide automático (autoplay)
        ========================================================================== -->
   <section class="py-xl bg-mesh border-t border-outline-variant/20" id="depoimentos">
     <div class="max-w-7xl mx-auto px-margin-mobile md:px-margin-desktop">
@@ -298,96 +510,118 @@
         <span class="text-secondary font-label-md text-label-md tracking-widest uppercase">Quem Viaja com a Gente</span>
         <h2 class="font-headline-lg text-headline-lg text-primary mt-sm">Depoimentos dos Nossos Viajantes</h2>
       </div>
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-gutter">
 
-        <!-- Depoimento 1 -->
-        <div class="bg-surface-container-lowest p-lg rounded-xl premium-shadow border border-outline-variant/20 flex flex-col justify-between">
-          <p class="font-body-md text-body-md text-on-surface-variant italic mb-md">"A melhor experiência de viagem da minha vida. Tudo planejado nos mínimos detalhes, sem nenhuma preocupação. O suporte 24/7 fez toda a diferença quando precisamos mudar um horário."</p>
-          <div class="flex items-center gap-sm">
-            <div class="w-12 h-12 flex-shrink-0 rounded-full overflow-hidden border-2 border-primary-fixed">
-              <img alt="Foto de Mariana Silva" class="w-full h-full object-cover" src="assets/img/fotodepoimento_mari.jpeg"/>
+      <div class="relative" id="depoimentos-carrossel">
+        <div class="overflow-hidden" id="depoimentos-viewport">
+          <div class="flex transition-transform duration-700 ease-in-out" id="depoimentos-track">
+
+            <!-- Depoimento 1 -->
+            <div class="w-full flex-shrink-0 flex justify-center px-sm" data-depoimentos-pagina>
+              <div class="bg-surface-container-lowest p-xl rounded-2xl premium-shadow border border-outline-variant/20 flex flex-col justify-between w-full max-w-2xl">
+                <p class="font-body-md text-body-md md:text-lg text-on-surface-variant italic mb-lg leading-relaxed">"Desde o primeiro contato, senti que tinha alguém realmente cuidando de cada detalhe. Tirei todas as dúvidas direto com a equipe, sem complicação."</p>
+                <div class="flex items-center gap-md">
+                  <div class="w-14 h-14 flex-shrink-0 rounded-full overflow-hidden border-2 border-primary-fixed">
+                    <img alt="Foto de Mariana Silva" class="w-full h-full object-cover" src="assets/img/fotodepoimento_mari.jpeg"/>
+                  </div>
+                  <div>
+                    <h4 class="font-bold text-base text-primary">Mariana Silva</h4>
+                    <p class="font-label-md text-xs text-secondary">Cliente Dippe Viagens</p>
+                  </div>
+                </div>
+              </div>
             </div>
-            <div>
-              <h4 class="font-headline-md text-base text-primary font-bold">Mariana Silva</h4>
-              <p class="font-label-md text-xs text-secondary">Roteiro Itália Sob Medida</p>
+
+            <!-- Depoimento 2 -->
+            <div class="w-full flex-shrink-0 flex justify-center px-sm" data-depoimentos-pagina>
+              <div class="bg-surface-container-lowest p-xl rounded-2xl premium-shadow border border-outline-variant/20 flex flex-col justify-between w-full max-w-2xl">
+                <p class="font-body-md text-body-md md:text-lg text-on-surface-variant italic mb-lg leading-relaxed">"O acompanhamento durante a viagem fez toda a diferença. Tivemos um imprevisto no aeroporto e a equipe resolveu tudo rapidamente pelo WhatsApp."</p>
+                <div class="flex items-center gap-md">
+                  <div class="w-14 h-14 flex-shrink-0 rounded-full overflow-hidden border-2 border-primary-fixed">
+                    <img alt="Foto de Lucas Rocha" class="w-full h-full object-cover" src="assets/img/fotodepoimento_lucas.jpeg"/>
+                  </div>
+                  <div>
+                    <h4 class="font-bold text-base text-primary">Lucas Rocha</h4>
+                    <p class="font-label-md text-xs text-secondary">Cliente Dippe Viagens</p>
+                  </div>
+                </div>
+              </div>
             </div>
+
+            <!-- Depoimento 3 -->
+            <div class="w-full flex-shrink-0 flex justify-center px-sm" data-depoimentos-pagina>
+              <div class="bg-surface-container-lowest p-xl rounded-2xl premium-shadow border border-outline-variant/20 flex flex-col justify-between w-full max-w-2xl">
+                <p class="font-body-md text-body-md md:text-lg text-on-surface-variant italic mb-lg leading-relaxed">"Não precisei me preocupar com passagem, hotel ou visto. Mandei o que eu queria e eles organizaram tudo. Atendimento próximo do início ao fim."</p>
+                <div class="flex items-center gap-md">
+                  <div class="w-14 h-14 flex-shrink-0 rounded-full overflow-hidden border-2 border-primary-fixed">
+                    <img alt="Foto de Beatriz Costa" class="w-full h-full object-cover" src="assets/img/fotodepoimento_beatriz.jpeg"/>
+                  </div>
+                  <div>
+                    <h4 class="font-bold text-base text-primary">Beatriz Costa</h4>
+                    <p class="font-label-md text-xs text-secondary">Cliente Dippe Viagens</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
           </div>
         </div>
 
-        <!-- Depoimento 2 -->
-        <div class="bg-surface-container-lowest p-lg rounded-xl premium-shadow border border-outline-variant/20 flex flex-col justify-between">
-          <p class="font-body-md text-body-md text-on-surface-variant italic mb-md">"Eles entenderam exatamente o que queríamos. Foi como viajar com as dicas de um melhor amigo especialista. Recomendo de olhos fechados e já estou planejando a próxima!"</p>
-          <div class="flex items-center gap-sm">
-            <div class="w-12 h-12 flex-shrink-0 rounded-full overflow-hidden border-2 border-primary-fixed">
-              <img alt="Foto de Lucas Rocha" class="w-full h-full object-cover" src="assets/img/fotodepoimento_lucas.jpeg"/>
-            </div>
-            <div>
-              <h4 class="font-headline-md text-base text-primary font-bold">Lucas Rocha</h4>
-              <p class="font-label-md text-xs text-secondary">Lua de Mel nas Maldivas</p>
-            </div>
-          </div>
-        </div>
-
-        <!-- Depoimento 3 -->
-        <div class="bg-surface-container-lowest p-lg rounded-xl premium-shadow border border-outline-variant/20 flex flex-col justify-between">
-          <p class="font-body-md text-body-md text-on-surface-variant italic mb-md">"Excelente curadoria de hotéis e passeios. Economizamos tempo e tivemos acessos exclusivos que não conseguiríamos sozinhos. Profissionalismo e carinho impecáveis."</p>
-          <div class="flex items-center gap-sm">
-            <div class="w-12 h-12 flex-shrink-0 rounded-full overflow-hidden border-2 border-primary-fixed">
-              <img alt="Foto de Beatriz Costa" class="w-full h-full object-cover" src="assets/img/fotodepoimento_beatriz.jpeg"/>
-            </div>
-            <div>
-              <h4 class="font-headline-md text-base text-primary font-bold">Beatriz Costa</h4>
-              <p class="font-label-md text-xs text-secondary">Eurotrip Personalizada</p>
-            </div>
-          </div>
-        </div>
-
+        <!-- Bolinhas indicadoras (geradas via JS) -->
+        <div class="flex justify-center items-center gap-sm mt-lg" id="depoimentos-dots"></div>
       </div>
 
-      <!-- Card para o próprio cliente enviar seu depoimento -->
-      <div class="mt-xl max-w-2xl mx-auto bg-surface-container-lowest p-lg rounded-xl premium-shadow border border-outline-variant/20" id="depoimento-form-container">
+      <!-- Link para página futura com todos os depoimentos -->
+      <div class="flex justify-center mt-lg">
+        <a href="#" id="ver-todos-depoimentos" class="font-label-md text-label-md text-primary hover:text-primary-container transition-colors inline-flex items-center gap-xs">
+          Ver todos os depoimentos
+          <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+        </a>
+      </div>
+
+      <!-- Formulário de envio de depoimento -->
+      <div class="mt-xl bg-surface-container-lowest p-lg rounded-2xl premium-shadow border border-outline-variant/20" id="depoimento-form-container">
         <h3 class="font-headline-md text-headline-md text-primary mb-xs text-center">Já viajou com a gente?</h3>
-        <p class="font-body-md text-body-md text-on-surface-variant text-center mb-lg">Conte como foi sua experiência.</p>
+        <p class="font-body-md text-body-md text-on-surface-variant text-center mb-lg">Conte como foi sua experiência. Seu depoimento é publicado automaticamente aqui na página.</p>
 
-        <form id="depoimento-form" action="https://formsubmit.co/ajax/dippeviagens@gmail.com" method="POST" class="space-y-sm" accept-charset="UTF-8">
+        <form id="depoimento-form" action="https://formsubmit.co/ajax/dippeviagens@gmail.com" method="POST" class="space-y-sm max-w-4xl mx-auto" accept-charset="UTF-8">
           <input type="hidden" name="_subject" value="[SITE - DIPPE VIAGENS] Novo Depoimento de Cliente">
-          <input type="hidden" name="_captcha" value="false">
+          <input type="hidden" name="_captcha" value="true">
           <input type="hidden" name="_template" value="table">
+          <!-- Honeypot anti-spam -->
+          <input type="text" name="_honey" style="display:none" tabindex="-1" autocomplete="off">
 
-          <!-- Nome + avatar de iniciais (atualiza em tempo real) e Viagem, lado a lado -->
           <div class="grid grid-cols-1 md:grid-cols-2 gap-sm">
             <div class="flex flex-col gap-xs">
               <label class="font-label-md text-label-md text-outline">Seu nome</label>
               <div class="flex items-center gap-sm">
-                <div id="depoimento-avatar-preview" class="w-9 h-9 flex-shrink-0 rounded-full bg-primary-fixed flex items-center justify-center font-label-md text-label-md text-primary select-none" aria-hidden="true">
-                  --
-                </div>
+                <div id="depoimento-avatar-preview" class="w-9 h-9 flex-shrink-0 rounded-full bg-primary-fixed flex items-center justify-center font-label-md text-label-md text-primary select-none" aria-hidden="true">--</div>
                 <input class="w-full border-outline-variant/30 rounded-lg focus:ring-primary focus:border-primary p-sm" placeholder="Nome e sobrenome" type="text" name="nome" id="depoimento-nome" required/>
               </div>
             </div>
             <div class="flex flex-col gap-xs">
               <label class="font-label-md text-label-md text-outline">Viagem realizada</label>
-              <input class="w-full border-outline-variant/30 rounded-lg focus:ring-primary focus:border-primary p-sm" placeholder="Ex: Lua de Mel em Paris" type="text" name="viagem" required/>
+              <input class="w-full border-outline-variant/30 rounded-lg focus:ring-primary focus:border-primary p-sm" placeholder="Ex: Férias na Disney" type="text" name="viagem" required/>
             </div>
           </div>
 
-          <!-- Campo "oculto" que viaja junto no e-mail com as iniciais calculadas -->
           <input type="hidden" name="iniciais" id="depoimento-iniciais-hidden" value="">
 
           <div class="flex flex-col gap-xs">
             <label class="font-label-md text-label-md text-outline">Seu depoimento</label>
-            <textarea class="w-full border-outline-variant/30 rounded-lg focus:ring-primary focus:border-primary p-sm resize-none" placeholder="Conte como foi sua experiência com a Dippe Viagens..." rows="2" name="depoimento" required></textarea>
+            <textarea class="w-full border-outline-variant/30 rounded-lg focus:ring-primary focus:border-primary p-sm resize-none" placeholder="Conte como foi sua experiência com a Dippe Viagens..." rows="3" name="depoimento" required></textarea>
           </div>
 
-          <button id="depoimento-submit-btn" class="w-full py-md bg-primary text-on-primary font-headline-md text-headline-md rounded-lg hover:bg-primary-container transition-all shadow-lg flex justify-center items-center gap-sm" type="submit">
-            <span>Enviar Depoimento</span>
-          </button>
+          <div class="flex justify-center pt-sm">
+            <button id="depoimento-submit-btn" class="w-full max-w-sm py-md px-xl bg-primary text-on-primary font-label-md text-label-md rounded-xl hover:bg-primary-container transition-all shadow-lg flex justify-center items-center gap-sm text-base" type="submit">
+              <span class="material-symbols-outlined text-[20px]">send</span>
+              <span>Enviar Depoimento</span>
+            </button>
+          </div>
         </form>
       </div>
 
     </div>
   </section>
-
   <!-- ==========================================================================
        CONTATO / FORMULÁRIO
        ========================================================================== -->
@@ -397,8 +631,8 @@
 
         <!-- Informações de contato -->
         <div class="w-full md:w-2/5">
-          <h2 class="font-headline-lg-mobile text-headline-lg-mobile md:font-headline-lg md:text-headline-lg mb-md">Vamos Planejar sua Próxima Aventura?</h2>
-          <p class="font-body-md text-body-md md:font-body-lg md:text-body-lg opacity-80 mb-lg">Agende uma conversa com nossos especialistas e descubra as possibilidades infinitas para sua próxima viagem.</p>
+          <h2 class="font-headline-lg-mobile text-headline-lg-mobile md:font-headline-lg md:text-headline-lg mb-md">Vamos Planejar sua Próxima Viagem?</h2>
+          <p class="font-body-md text-body-md md:font-body-lg md:text-body-lg opacity-80 mb-lg">Conte um pouco sobre a viagem que você tem em mente e nossa equipe entra em contato para cuidar de todo o resto.</p>
           <div class="space-y-md">
             <div class="flex items-start gap-md">
               <span class="material-symbols-outlined text-secondary-container">call</span>
@@ -418,7 +652,7 @@
               <span class="material-symbols-outlined text-secondary-container">public</span>
               <div>
                 <p class="font-label-md text-label-md opacity-60 uppercase">Rede Social</p>
-                <a class="font-body-lg text-body-lg" href="https://www.instagram.com/dippeviagens/" target="_blank">@dippeviagens</a>
+                <a class="font-body-lg text-body-lg" href="https://www.instagram.com/dippeviagens/" target="_blank" rel="noopener noreferrer">@dippeviagens</a>
               </div>
             </div>
           </div>
@@ -427,14 +661,16 @@
         <!-- Formulário de consultoria -->
         <div class="w-full md:w-3/5 bg-surface-container-lowest p-lg rounded-xl text-on-surface premium-shadow">
           <div id="form-container">
-            <h4 class="font-headline-md text-headline-md text-primary mb-lg">Solicitar Consultoria Gratuita</h4>
+            <h4 class="font-headline-md text-headline-md text-primary mb-lg">Solicitar Planejamento da Sua Viagem</h4>
 
             <form id="consultoria-form" action="https://formsubmit.co/ajax/dippeviagens@gmail.com" method="POST" class="space-y-md" accept-charset="UTF-8">
 
               <!-- Configurações do FormSubmit (campos ocultos usam "_" na frente) -->
-              <input type="hidden" name="_subject" value="[SITE - DIPPE VIAGENS] Nova Solicitação de Consultoria">
-              <input type="hidden" name="_captcha" value="false">
+              <input type="hidden" name="_subject" value="[SITE - DIPPE VIAGENS] Nova Solicitação de Planejamento">
+              <input type="hidden" name="_captcha" value="true">
               <input type="hidden" name="_template" value="table">
+              <!-- Honeypot anti-spam: campo invisível, bots preenchem, humanos não -->
+              <input type="text" name="_honey" style="display:none" tabindex="-1" autocomplete="off">
 
               <!-- Grade principal: nome + telefone -->
               <div class="grid grid-cols-1 md:grid-cols-2 gap-md">
@@ -454,28 +690,24 @@
                 </div>
               </div>
 
-              <!-- Destino de interesse -->
+              <!-- Destino (campo livre, opcional — a empresa não vende destinos fechados) -->
               <div class="flex flex-col gap-xs">
-                <label class="font-label-md text-label-md text-outline">Destino de Interesse</label>
-                <select class="w-full border-outline-variant/30 rounded-lg focus:ring-primary focus:border-primary p-sm" name="destino_interesse">
-                  <option value="Europa">Europa</option>
-                  <option value="Ásia">Ásia</option>
-                  <option value="África">África</option>
-                  <option value="América do Norte">América do Norte</option>
-                  <option value="Outros">Outros</option>
-                </select>
+                <label class="font-label-md text-label-md text-outline">Para onde você está pensando em ir? (Opcional)</label>
+                <input class="w-full border-outline-variant/30 rounded-lg focus:ring-primary focus:border-primary p-sm" placeholder="Ex: ainda não decidi, ou Portugal, ou EUA..." type="text" name="destino_interesse"/>
               </div>
 
               <!-- Mensagem -->
               <div class="flex flex-col gap-xs">
                 <label class="font-label-md text-label-md text-outline">Mensagem (Opcional)</label>
-                <textarea class="w-full border-outline-variant/30 rounded-lg focus:ring-primary focus:border-primary p-sm" placeholder="Conte-nos um pouco sobre seus desejos de viagem..." rows="4" name="message"></textarea>
+                <textarea class="w-full border-outline-variant/30 rounded-lg focus:ring-primary focus:border-primary p-sm" placeholder="Conte-nos um pouco sobre como imagina essa viagem..." rows="4" name="message"></textarea>
               </div>
 
-              <!-- Botão de envio -->
-              <button id="submit-btn" class="w-full py-md bg-primary text-on-primary font-headline-md text-headline-md rounded-lg hover:bg-primary-container transition-all shadow-lg flex justify-center items-center gap-sm" type="submit">
-                <span>Solicitar Consultoria</span>
-              </button>
+              <div class="flex justify-center pt-sm">
+                <button id="submit-btn" class="w-full max-w-sm py-md px-xl bg-primary text-on-primary font-label-md text-label-md rounded-xl hover:bg-primary-container transition-all shadow-lg flex justify-center items-center gap-sm text-base" type="submit">
+                  <span class="material-symbols-outlined text-[20px]">send</span>
+                  <span>Solicitar Planejamento</span>
+                </button>
+              </div>
             </form>
           </div>
         </div>
@@ -497,12 +729,27 @@
 
       <div class="flex flex-col sm:flex-row items-center gap-md text-center sm:text-left">
         <img alt="Logo Dippe Viagens" class="h-16 w-auto flex-shrink-0" src="assets/img/logo_dippe.png"/>
-        <p class="font-body-md text-body-md text-surface-variant border-t sm:border-t-0 sm:border-l border-surface-variant/20 pt-sm sm:pt-0 sm:pl-md max-w-xs sm:max-w-sm">
-          Excelência em viagens personalizadas para quem valoriza o tempo e a experiência.
+        <p class="font-body-md text-xs sm:text-body-md text-surface-variant border-t sm:border-t-0 sm:border-l border-surface-variant/20 pt-sm sm:pt-0 sm:pl-md text-center sm:text-left max-w-[200px] sm:max-w-none">
+          Você sonha, a gente organiza. Do passaporte ao check-in, cuidamos de tudo.
         </p>
       </div>
 
-      <div class="flex flex-shrink-0">
+      <div class="flex items-center gap-sm flex-shrink-0">
+        <!-- Instagram -->
+        <a
+          href="https://www.instagram.com/dippeviagens/"
+          target="_blank"
+          rel="noopener noreferrer"
+          title="Siga no Instagram"
+          class="w-10 h-10 rounded-full border border-surface-variant flex items-center justify-center text-surface-variant hover:border-[#E1306C] hover:text-[#E1306C] hover:bg-[#E1306C]/10 transition-all"
+          aria-label="Instagram da Dippe Viagens"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5">
+            <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+          </svg>
+        </a>
+
+        <!-- Compartilhar -->
         <div id="share-button" class="w-10 h-10 rounded-full border border-surface-variant flex items-center justify-center text-surface-variant hover:bg-surface-bright hover:text-primary transition-all cursor-pointer" title="Compartilhar site">
           <span class="material-symbols-outlined text-[20px]">share</span>
         </div>
@@ -517,6 +764,80 @@
 
   </div>
 </footer>
+
+<!-- ==========================================================================
+     BOTÃO FLUTUANTE WHATSAPP
+     ========================================================================== -->
+<div id="whatsapp-widget" class="fixed bottom-6 right-6 z-[200] flex flex-col items-end gap-sm">
+
+  <!-- Balão de mensagem (aparece ao hover/clique) -->
+  <div id="whatsapp-bubble" class="hidden flex-col items-end gap-xs">
+    <div class="bg-surface rounded-2xl rounded-br-sm shadow-xl border border-outline-variant/20 p-md max-w-[220px]">
+      <p class="font-label-md text-label-md text-on-surface mb-xs">Olá! 👋</p>
+      <p class="font-body-md text-body-md text-on-surface-variant text-sm leading-snug">Quer planejar sua viagem? Fale com a gente pelo WhatsApp!</p>
+      <a
+        href="https://wa.me/5521991442236?text=Ol%C3%A1%2C%20vim%20pelo%20site%20e%20gostaria%20de%20planejar%20minha%20viagem!"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="mt-sm flex items-center justify-center gap-xs w-full py-sm bg-[#25D366] text-white font-label-md text-label-md rounded-xl hover:bg-[#1ebe5d] transition-colors shadow-sm"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4 flex-shrink-0">
+          <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+        </svg>
+        Iniciar conversa
+      </a>
+    </div>
+    <!-- Seta apontando para o botão -->
+    <div class="w-3 h-3 bg-surface border-r border-b border-outline-variant/20 rotate-45 mr-5 -mt-2 shadow-sm"></div>
+  </div>
+
+  <!-- Botão principal -->
+  <button
+    id="whatsapp-toggle"
+    aria-label="Falar pelo WhatsApp"
+    class="w-14 h-14 rounded-full bg-[#25D366] text-white shadow-2xl flex items-center justify-center hover:bg-[#1ebe5d] hover:scale-110 transition-all duration-200 relative"
+  >
+    <!-- Indicador de online -->
+    <span class="absolute top-0 right-0 w-3.5 h-3.5 bg-green-400 border-2 border-white rounded-full animate-pulse"></span>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-7 h-7">
+      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+    </svg>
+  </button>
+</div>
+
+<script>
+  // WhatsApp widget toggle
+  (function() {
+    const toggle = document.getElementById('whatsapp-toggle');
+    const bubble = document.getElementById('whatsapp-bubble');
+    let open = false;
+
+    // Auto-show bubble after 3 seconds on first visit
+    setTimeout(function() {
+      if (!open) {
+        bubble.classList.remove('hidden');
+        bubble.classList.add('flex');
+        open = true;
+      }
+    }, 3000);
+
+    toggle.addEventListener('click', function() {
+      open = !open;
+      bubble.classList.toggle('hidden', !open);
+      bubble.classList.toggle('flex', open);
+    });
+
+    // Close bubble when clicking outside
+    document.addEventListener('click', function(e) {
+      const widget = document.getElementById('whatsapp-widget');
+      if (open && !widget.contains(e.target)) {
+        bubble.classList.add('hidden');
+        bubble.classList.remove('flex');
+        open = false;
+      }
+    });
+  })();
+</script>
 
 <!-- Script principal do site (menu mobile, scroll suave, formulário, etc.) -->
 <script src="js/main.js"></script>

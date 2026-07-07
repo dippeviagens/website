@@ -200,65 +200,32 @@ function initConsultoriaForm() {
 }
 
 /**
- * Envio do formulário "Já viajou com a gente?" (depoimentos enviados pelos
- * próprios clientes), via FormSubmit. Funciona igual ao formulário de
- * consultoria: mostra mensagem de sucesso/erro no próprio card.
+ * ==========================================================================
+ * DEPOIMENTOS AUTOMÁTICOS — publicação sem trabalho manual
+ * ==========================================================================
+ * Como o site é estático (não tem banco de dados próprio), usamos uma
+ * planilha do Google como "banco de dados" gratuito, acessada através de
+ * um Google Apps Script publicado como Web App. O fluxo é:
+ *
+ *   1) Ao carregar a página, buscamos (GET) todos os depoimentos já salvos
+ *      na planilha e inserimos no carrossel — assim QUALQUER visitante,
+ *      em qualquer dispositivo, vê os depoimentos publicados.
+ *   2) Quando um cliente envia o formulário, enviamos (POST) os dados para
+ *      a mesma planilha (fica salvo pra sempre, pra todo mundo ver) e,
+ *      opcionalmente, também para o FormSubmit (pra vocês continuarem
+ *      recebendo o e-mail de aviso, se quiserem manter isso).
+ *   3) O novo depoimento aparece imediatamente no carrossel de quem enviou,
+ *      sem precisar recarregar a página.
+ *
+ * IMPORTANTE — configuração única (feita uma vez só):
+ *   Troque a constante DEPOIMENTOS_API_URL abaixo pela URL do seu Web App
+ *   do Google Apps Script. Veja o guia de configuração enviado junto com
+ *   estes arquivos (GUIA-CONFIGURACAO-DEPOIMENTOS.md) para o passo a passo.
+ *   Enquanto essa URL não for configurada, o site continua funcionando
+ *   normalmente, só que sem publicar novos depoimentos pra todo mundo.
+ * ==========================================================================
  */
-function initDepoimentoForm() {
-  const depoimentoForm = document.getElementById('depoimento-form');
-  if (!depoimentoForm) return;
-
-  depoimentoForm.addEventListener('submit', async function (e) {
-    e.preventDefault();
-
-    const btn = document.getElementById('depoimento-submit-btn');
-    const container = document.getElementById('depoimento-form-container');
-
-    btn.disabled = true;
-    btn.innerHTML = '<span>Enviando...</span>';
-
-    const formData = new FormData(this);
-
-    try {
-      const response = await fetch(this.action, {
-        method: 'POST',
-        body: formData,
-        headers: { Accept: 'application/json' },
-      });
-
-      const data = await response.json().catch(() => null);
-
-      // DEBUG: abra o DevTools (F12 -> Console) ao testar o formulário.
-      // Essas linhas mostram exatamente o que o FormSubmit respondeu,
-      // o que ajuda a identificar por que um e-mail pode não ter chegado.
-      console.log('[Depoimento] HTTP status:', response.status, response.ok);
-      console.log('[Depoimento] Resposta do FormSubmit:', data);
-
-      if (response.ok && data && (data.success === true || data.success === 'true')) {
-        container.innerHTML = `
-          <div class="text-center py-md flex flex-col items-center gap-sm">
-            <span class="material-symbols-outlined text-[56px] text-secondary-container">check_circle</span>
-            <h3 class="font-headline-md text-headline-md text-primary mt-sm">Obrigado pelo depoimento!</h3>
-            <p class="font-body-md text-body-md text-on-surface-variant max-w-xs mx-auto">
-              Recebemos sua mensagem. Seu depoimento já está publicado aqui na página — obrigado por compartilhar sua experiência!
-            </p>
-          </div>
-        `;
-      } else {
-        console.error('Resposta do FormSubmit:', data);
-        alert(
-          'Ops! Ocorreu um erro ao enviar. Se for a primeira vez usando este formulário, verifique a caixa de entrada (e spam) do e-mail dippeviagens@gmail.com para confirmar a ativação do FormSubmit.'
-        );
-        btn.disabled = false;
-        btn.innerHTML = '<span>Enviar Depoimento</span>';
-      }
-    } catch (error) {
-      alert('Erro de conexão. Verifique sua internet e tente novamente.');
-      btn.disabled = false;
-      btn.innerHTML = '<span>Enviar Depoimento</span>';
-    }
-  });
-}
+const DEPOIMENTOS_API_URL = 'https://script.google.com/macros/s/AKfycbwbvV6lu0R8iS8KTzMQ7y5kkwa7oZTM9pjq1BnZCbV3x8FSAgfSPdeJrxJQDzSIBXDS/exec';
 
 /**
  * Calcula as iniciais de um nome completo (ex: "Mariana Silva" -> "MS").
@@ -266,7 +233,7 @@ function initDepoimentoForm() {
  * Se só houver um nome, usa as duas primeiras letras dele.
  */
 function getIniciais(nomeCompleto) {
-  const partes = nomeCompleto.trim().split(/\s+/).filter(Boolean);
+  const partes = (nomeCompleto || '').trim().split(/\s+/).filter(Boolean);
   if (partes.length === 0) return '--';
   if (partes.length === 1) return partes[0].slice(0, 2).toUpperCase();
   const primeira = partes[0][0];
@@ -274,32 +241,49 @@ function getIniciais(nomeCompleto) {
   return (primeira + ultima).toUpperCase();
 }
 
+/** Escapa texto do usuário antes de inserir no HTML (evita XSS). */
+function escapeHtml(texto) {
+  const div = document.createElement('div');
+  div.textContent = texto == null ? '' : String(texto);
+  return div.innerHTML;
+}
+
 /**
- * Atualiza o avatar de pré-visualização (bolinha com as iniciais) conforme
- * o cliente digita o nome no formulário de depoimento. Também guarda o
- * valor calculado num campo escondido, para que as iniciais cheguem
- * prontas no e-mail recebido via FormSubmit.
+ * Monta o elemento DOM de um slide de depoimento (mesmo layout dos cards
+ * originais), usando um círculo com as INICIAIS do nome no lugar da foto —
+ * já que clientes não enviam foto, só o depoimento em texto.
  */
-function initDepoimentoAvatarPreview() {
-  const nomeInput = document.getElementById('depoimento-nome');
-  const avatarPreview = document.getElementById('depoimento-avatar-preview');
-  const iniciaisHidden = document.getElementById('depoimento-iniciais-hidden');
+function criarSlideDepoimentoEl({ nome, iniciais, viagem, depoimento }) {
+  const wrapper = document.createElement('div');
+  wrapper.className = 'w-full flex-shrink-0 flex justify-center px-sm';
+  wrapper.setAttribute('data-depoimentos-pagina', '');
 
-  if (!nomeInput || !avatarPreview || !iniciaisHidden) return;
+  const inic = iniciais || getIniciais(nome);
 
-  nomeInput.addEventListener('input', () => {
-    const iniciais = getIniciais(nomeInput.value);
-    avatarPreview.textContent = iniciais;
-    iniciaisHidden.value = iniciais;
-  });
+  wrapper.innerHTML = `
+    <div class="bg-surface-container-lowest p-xl rounded-2xl premium-shadow border border-outline-variant/20 flex flex-col justify-between w-full max-w-2xl">
+      <p class="font-body-md text-body-md md:text-lg text-on-surface-variant italic mb-lg leading-relaxed">"${escapeHtml(depoimento)}"</p>
+      <div class="flex items-center gap-md">
+        <div class="w-14 h-14 flex-shrink-0 rounded-full bg-primary-fixed border-2 border-primary-fixed flex items-center justify-center font-label-md text-label-md text-primary select-none" aria-hidden="true">${escapeHtml(inic)}</div>
+        <div>
+          <h4 class="font-bold text-base text-primary">${escapeHtml(nome)}</h4>
+          <p class="font-label-md text-xs text-secondary">${escapeHtml(viagem) || 'Cliente Dippe Viagens'}</p>
+        </div>
+      </div>
+    </div>
+  `;
+  return wrapper;
 }
 
 /**
  * Carrossel de depoimentos: exibe 1 card por vez e passa automaticamente
  * para o próximo a cada 5 s (autoplay). Pausa ao passar o mouse/foco.
  * Bolinhas indicadoras clicáveis geradas dinamicamente.
- * Para adicionar mais depoimentos: basta duplicar um [data-depoimentos-pagina]
- * no HTML — o carrossel detecta e inclui automaticamente.
+ *
+ * Retorna uma API pequena ({ adicionarSlide, adicionarSlideNoInicio }) para
+ * que outras partes do código (carregamento automático e envio do
+ * formulário) consigam inserir novos depoimentos dinamicamente, sem
+ * precisar editar o HTML na mão.
  */
 function initDepoimentosCarrossel() {
   const carrossel = document.getElementById('depoimentos-carrossel');
@@ -307,28 +291,28 @@ function initDepoimentosCarrossel() {
   const viewport = document.getElementById('depoimentos-viewport');
   const dotsContainer = document.getElementById('depoimentos-dots');
 
-  if (!carrossel || !track || !viewport || !dotsContainer) return;
-
-  const slides = Array.from(track.querySelectorAll('[data-depoimentos-pagina]'));
-  const total = slides.length;
-  if (total === 0) return;
+  if (!carrossel || !track || !viewport || !dotsContainer) return null;
 
   const INTERVALO = 5000; // 5 s entre slides
+  let slides = [];
+  let dots = [];
   let atual = 0;
   let timer = null;
 
-  // Bolinhas indicadoras
-  dotsContainer.innerHTML = '';
-  slides.forEach((_, i) => {
-    const dot = document.createElement('button');
-    dot.setAttribute('aria-label', `Depoimento ${i + 1}`);
-    dot.className = 'w-2.5 h-2.5 rounded-full transition-all duration-300';
-    dot.addEventListener('click', () => { irPara(i); reiniciar(); });
-    dotsContainer.appendChild(dot);
-  });
-  const dots = Array.from(dotsContainer.children);
+  function construirDots() {
+    dotsContainer.innerHTML = '';
+    slides.forEach((_, i) => {
+      const dot = document.createElement('button');
+      dot.setAttribute('aria-label', `Depoimento ${i + 1}`);
+      dot.className = 'w-2.5 h-2.5 rounded-full transition-all duration-300';
+      dot.addEventListener('click', () => { irPara(i); reiniciar(); });
+      dotsContainer.appendChild(dot);
+    });
+    dots = Array.from(dotsContainer.children);
+  }
 
   function atualizarUI() {
+    if (atual >= slides.length) atual = 0;
     track.style.transform = `translateX(-${atual * 100}%)`;
     dots.forEach((d, i) => {
       d.classList.toggle('bg-primary', i === atual);
@@ -339,23 +323,156 @@ function initDepoimentosCarrossel() {
   }
 
   function irPara(i) {
-    atual = (i + total) % total;
+    if (!slides.length) return;
+    atual = (i + slides.length) % slides.length;
     atualizarUI();
   }
 
   function proximo() { irPara(atual + 1); }
 
-  function iniciar()  { parar(); timer = setInterval(proximo, INTERVALO); }
+  function iniciar()  { parar(); if (slides.length > 1) timer = setInterval(proximo, INTERVALO); }
   function parar()    { if (timer) { clearInterval(timer); timer = null; } }
   function reiniciar(){ iniciar(); }
+
+  function recarregarSlides() {
+    slides = Array.from(track.querySelectorAll('[data-depoimentos-pagina]'));
+    construirDots();
+    atualizarUI();
+  }
 
   carrossel.addEventListener('mouseenter', parar);
   carrossel.addEventListener('mouseleave', iniciar);
   carrossel.addEventListener('focusin',    parar);
   carrossel.addEventListener('focusout',   iniciar);
 
-  atualizarUI();
+  recarregarSlides();
   iniciar();
+
+  return {
+    // Adiciona um novo slide no final (ex: depoimento recém-enviado).
+    adicionarSlide(el, irParaEle) {
+      track.appendChild(el);
+      recarregarSlides();
+      if (irParaEle) { irPara(slides.length - 1); reiniciar(); }
+    },
+    // Adiciona um novo slide no início (usado ao carregar depoimentos
+    // salvos, do mais recente para o mais antigo).
+    adicionarSlideNoInicio(el) {
+      track.insertBefore(el, track.firstChild);
+      recarregarSlides();
+    },
+  };
+}
+
+/**
+ * Busca (GET) os depoimentos já salvos na planilha do Google e insere no
+ * carrossel, do mais recente para o mais antigo, logo antes dos depoimentos
+ * fixos de exemplo. Assim, qualquer visitante do site vê todos os
+ * depoimentos publicados — não só quem enviou.
+ */
+async function carregarDepoimentosSalvos(carrosselAPI) {
+  if (!carrosselAPI) return;
+  if (!DEPOIMENTOS_API_URL || DEPOIMENTOS_API_URL.includes('COLOQUE_AQUI')) {
+    console.warn('[Depoimentos] DEPOIMENTOS_API_URL não configurada — pulando carregamento automático.');
+    return;
+  }
+
+  try {
+    const resp = await fetch(DEPOIMENTOS_API_URL, { method: 'GET' });
+    const data = await resp.json();
+
+    if (data && data.success && Array.isArray(data.depoimentos)) {
+      // A API já devolve do mais novo para o mais antigo; inserindo cada um
+      // no início, na ordem recebida, mantém essa ordem no carrossel.
+      data.depoimentos.forEach((dep) => {
+        const el = criarSlideDepoimentoEl(dep);
+        carrosselAPI.adicionarSlideNoInicio(el);
+      });
+    }
+  } catch (err) {
+    console.error('[Depoimentos] Erro ao carregar depoimentos salvos:', err);
+  }
+}
+
+/**
+ * Envio do formulário "Já viajou com a gente?" (depoimentos enviados pelos
+ * próprios clientes). Publica automaticamente na planilha (visível pra
+ * todo mundo) e adiciona o card na hora no carrossel de quem enviou.
+ */
+function initDepoimentoForm(carrosselAPI) {
+  const depoimentoForm = document.getElementById('depoimento-form');
+  if (!depoimentoForm) return;
+
+  depoimentoForm.addEventListener('submit', async function (e) {
+    e.preventDefault();
+
+    const btn = document.getElementById('depoimento-submit-btn');
+    const container = document.getElementById('depoimento-form-container');
+    const iniciaisHidden = document.getElementById('depoimento-iniciais-hidden');
+
+    const nome = (this.querySelector('[name="nome"]').value || '').trim();
+    const viagem = (this.querySelector('[name="viagem"]').value || '').trim();
+    const depoimentoTexto = (this.querySelector('[name="depoimento"]').value || '').trim();
+    const honeypot = (this.querySelector('[name="_honey"]').value || '').trim();
+    const iniciais = getIniciais(nome);
+
+    if (iniciaisHidden) iniciaisHidden.value = iniciais;
+
+    // Spam óbvio (bot preenchendo o campo escondido): ignora silenciosamente.
+    if (honeypot) return;
+
+    btn.disabled = true;
+    btn.innerHTML = '<span>Enviando...</span>';
+
+    const publicarNaPlanilha = DEPOIMENTOS_API_URL && !DEPOIMENTOS_API_URL.includes('COLOQUE_AQUI');
+
+    try {
+      // 1) Salva na planilha (fica visível pra todo mundo, pra sempre).
+      if (publicarNaPlanilha) {
+        await fetch(DEPOIMENTOS_API_URL, {
+          method: 'POST',
+          // Sem cabeçalho Content-Type customizado de propósito: assim o
+          // navegador não faz "preflight" (OPTIONS), que o Apps Script não
+          // responde por padrão. O Apps Script lê o corpo cru mesmo assim.
+          body: JSON.stringify({ nome, iniciais, viagem, depoimento: depoimentoTexto }),
+        });
+      }
+
+      // 2) Também manda por e-mail via FormSubmit, para vocês terem o
+      //    registro na caixa de entrada (opcional — pode remover se não
+      //    quiserem mais receber o e-mail, já que a publicação é automática).
+      const formData = new FormData(this);
+      const response = await fetch(this.action, {
+        method: 'POST',
+        body: formData,
+        headers: { Accept: 'application/json' },
+      });
+      const data = await response.json().catch(() => null);
+      console.log('[Depoimento] HTTP status:', response.status, response.ok);
+      console.log('[Depoimento] Resposta do FormSubmit:', data);
+
+      // 3) Mostra o card na hora, pra quem enviou, sem esperar recarregar.
+      if (carrosselAPI) {
+        const novoSlide = criarSlideDepoimentoEl({ nome, iniciais, viagem, depoimento: depoimentoTexto });
+        carrosselAPI.adicionarSlide(novoSlide, true);
+      }
+
+      container.innerHTML = `
+        <div class="text-center py-md flex flex-col items-center gap-sm">
+          <span class="material-symbols-outlined text-[56px] text-secondary-container">check_circle</span>
+          <h3 class="font-headline-md text-headline-md text-primary mt-sm">Obrigado pelo depoimento!</h3>
+          <p class="font-body-md text-body-md text-on-surface-variant max-w-xs mx-auto">
+            Recebemos sua mensagem. Seu depoimento já está publicado aqui na página — obrigado por compartilhar sua experiência!
+          </p>
+        </div>
+      `;
+    } catch (error) {
+      console.error('[Depoimento] Erro ao publicar:', error);
+      alert('Erro de conexão. Verifique sua internet e tente novamente.');
+      btn.disabled = false;
+      btn.innerHTML = '<span>Enviar Depoimento</span>';
+    }
+  });
 }
 
 // ---- Inicialização: dispara todas as funções quando o DOM estiver pronto ----
@@ -478,9 +595,13 @@ document.addEventListener('DOMContentLoaded', () => {
   initMobileMenu();
   initShareButton();
   initConsultoriaForm();
-  initDepoimentoForm();
-  initDepoimentoAvatarPreview();
-  initDepoimentosCarrossel();
+
+  // Carrossel primeiro (com os 3 depoimentos fixos de exemplo), depois
+  // buscamos os depoimentos salvos na planilha e os inserimos automaticamente.
+  const depoimentosCarrosselAPI = initDepoimentosCarrossel();
+  carregarDepoimentosSalvos(depoimentosCarrosselAPI);
+  initDepoimentoForm(depoimentosCarrosselAPI);
+
   initGallery();
   initVerTodosDepoimentos();
   initGuiaDoViajante();

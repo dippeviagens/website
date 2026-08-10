@@ -519,6 +519,37 @@ function initGallery() {
 }
 
 /**
+ * Botão "Ver mais fotos" da galeria: por padrão só as 6 primeiras fotos
+ * ficam visíveis (as demais têm a classe "hidden" no HTML). Ao clicar,
+ * revela o restante das fotos e o botão vira "Ver menos" para poder
+ * recolher novamente.
+ */
+function initGalleryToggle() {
+  const btn = document.getElementById('gallery-toggle-btn');
+  const btnText = document.getElementById('gallery-toggle-text');
+  const btnIcon = document.getElementById('gallery-toggle-icon');
+  const extraItems = document.querySelectorAll('.gallery-extra');
+
+  if (!btn || !extraItems.length) return;
+
+  let expanded = false;
+
+  btn.addEventListener('click', () => {
+    expanded = !expanded;
+
+    extraItems.forEach((item) => item.classList.toggle('hidden', !expanded));
+
+    if (btnText) btnText.textContent = expanded ? 'Ver menos fotos' : 'Ver mais fotos';
+    if (btnIcon) btnIcon.style.transform = expanded ? 'rotate(180deg)' : 'rotate(0deg)';
+
+    // Se recolher, rola suavemente até o início da galeria para não perder o contexto
+    if (!expanded) {
+      document.getElementById('galeria')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  });
+}
+
+/**
  * Botão "Ver todos os depoimentos": por enquanto, ainda não existe uma
  * página dedicada, então o clique apenas avisa o usuário. Quando a página
  * de depoimentos existir, basta trocar o href do link no HTML (de "#" para
@@ -603,6 +634,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initDepoimentoForm(depoimentosCarrosselAPI);
 
   initGallery();
+  initGalleryToggle();
   initVerTodosDepoimentos();
   initGuiaDoViajante();
 });

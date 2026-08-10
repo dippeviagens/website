@@ -519,10 +519,14 @@ function initGallery() {
 }
 
 /**
- * Botão "Ver mais fotos" da galeria: por padrão só as 6 primeiras fotos
- * ficam visíveis (as demais têm a classe "hidden" no HTML). Ao clicar,
- * revela o restante das fotos e o botão vira "Ver menos" para poder
- * recolher novamente.
+ * Botão "Ver mais fotos" da galeria: por padrão só as fotos marcadas com
+ * "gallery-extra" ficam ocultas. Ao clicar, revela (ou recolhe) o restante
+ * das fotos com uma transição suave de fade + escala.
+ *
+ * Importante: ao recolher, só rolamos a página DEPOIS que a animação de
+ * fade termina e o "hidden" já foi aplicado — assim o layout já está
+ * estável quando o scroll acontece, evitando o pulo/tremor de fazer as
+ * duas coisas (esconder + rolar) ao mesmo tempo.
  */
 function initGalleryToggle() {
   const btn = document.getElementById('gallery-toggle-btn');
@@ -533,19 +537,44 @@ function initGalleryToggle() {
   if (!btn || !extraItems.length) return;
 
   let expanded = false;
+  const TRANSITION_MS = 300;
+
+  // Prepara a transição suave em cada foto extra (fade + leve escala)
+  extraItems.forEach((item) => {
+    item.style.transition = `opacity ${TRANSITION_MS}ms ease, transform ${TRANSITION_MS}ms ease`;
+    item.style.opacity = '0';
+    item.style.transform = 'scale(0.95)';
+  });
 
   btn.addEventListener('click', () => {
     expanded = !expanded;
 
-    extraItems.forEach((item) => item.classList.toggle('hidden', !expanded));
+    if (expanded) {
+      // Abrir: mostra os itens primeiro, depois anima a entrada (fade in)
+      extraItems.forEach((item) => item.classList.remove('hidden'));
+      requestAnimationFrame(() => {
+        extraItems.forEach((item) => {
+          item.style.opacity = '1';
+          item.style.transform = 'scale(1)';
+        });
+      });
+    } else {
+      // Fechar: primeiro só anima o fade out (sem mexer no layout ainda)
+      extraItems.forEach((item) => {
+        item.style.opacity = '0';
+        item.style.transform = 'scale(0.95)';
+      });
+
+      // Só depois que o fade terminar (layout já estável) escondemos de
+      // fato os itens e, em seguida, rolamos suavemente até o botão.
+      setTimeout(() => {
+        extraItems.forEach((item) => item.classList.add('hidden'));
+        btn.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }, TRANSITION_MS);
+    }
 
     if (btnText) btnText.textContent = expanded ? 'Ver menos fotos' : 'Ver mais fotos';
     if (btnIcon) btnIcon.style.transform = expanded ? 'rotate(180deg)' : 'rotate(0deg)';
-
-    // Se recolher, rola suavemente até o início da galeria para não perder o contexto
-    if (!expanded) {
-      document.getElementById('galeria')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
   });
 }
 

@@ -227,6 +227,9 @@ function initConsultoriaForm() {
  */
 const DEPOIMENTOS_API_URL = 'https://script.google.com/macros/s/AKfycbwbvV6lu0R8iS8KTzMQ7y5kkwa7oZTM9pjq1BnZCbV3x8FSAgfSPdeJrxJQDzSIBXDS/exec';
 
+/** Quantidade máxima de depoimentos exibidos no carrossel (sempre os mais recentes). */
+const MAX_DEPOIMENTOS_EXIBIDOS = 5;
+
 /**
  * Calcula as iniciais de um nome completo (ex: "Mariana Silva" -> "MS").
  * Usa a primeira letra do primeiro nome e a primeira letra do último nome.
@@ -340,6 +343,14 @@ function initDepoimentosCarrossel() {
     atualizarUI();
   }
 
+  // Garante que nunca fiquem mais que MAX_DEPOIMENTOS_EXIBIDOS visíveis:
+  // remove os excedentes do FINAL do track (os mais antigos), já que a
+  // convenção usada aqui é sempre manter o mais recente na frente (índice 0).
+  function limitarQuantidade() {
+    const filhos = Array.from(track.children);
+    filhos.slice(MAX_DEPOIMENTOS_EXIBIDOS).forEach((el) => el.remove());
+  }
+
   carrossel.addEventListener('mouseenter', parar);
   carrossel.addEventListener('mouseleave', iniciar);
   carrossel.addEventListener('focusin',    parar);
@@ -349,19 +360,86 @@ function initDepoimentosCarrossel() {
   iniciar();
 
   return {
-    // Adiciona um novo slide no final (ex: depoimento recém-enviado).
+    // Adiciona um novo depoimento recém-enviado: sempre entra como o mais
+    // recente (na frente) e, se isso passar do limite, remove o mais antigo.
     adicionarSlide(el, irParaEle) {
-      track.appendChild(el);
-      recarregarSlides();
-      if (irParaEle) { irPara(slides.length - 1); reiniciar(); }
-    },
-    // Adiciona um novo slide no início (usado ao carregar depoimentos
-    // salvos, do mais recente para o mais antigo).
-    adicionarSlideNoInicio(el) {
       track.insertBefore(el, track.firstChild);
+      limitarQuantidade();
+      recarregarSlides();
+      if (irParaEle) { irPara(0); reiniciar(); }
+    },
+    // Usado ao carregar os depoimentos salvos na planilha: a API já devolve
+    // do mais novo para o mais antigo, então basta adicionar ao final, na
+    // ordem recebida, para preservar essa ordem (mais recente primeiro).
+    adicionarSlideNoInicio(el) {
+      track.appendChild(el);
+      limitarQuantidade();
       recarregarSlides();
     },
   };
+}
+
+/**
+ * Carrossel de fotos da seção "Nossa História": mostra 1 foto por vez e
+ * troca automaticamente a cada alguns segundos, exatamente como o carrossel
+ * de depoimentos (autoplay + bolinhas indicadoras + pausa ao passar o
+ * mouse/foco). As fotos já vêm fixas no HTML (não são dinâmicas).
+ */
+function initSobreCarrossel() {
+  const carrossel = document.getElementById('sobre-carrossel');
+  const track = document.getElementById('sobre-track');
+  const viewport = document.getElementById('sobre-viewport');
+  const dotsContainer = document.getElementById('sobre-dots');
+
+  if (!carrossel || !track || !viewport || !dotsContainer) return;
+
+  const INTERVALO = 4000; // 4 s entre fotos
+  const slides = Array.from(track.children);
+  let dots = [];
+  let atual = 0;
+  let timer = null;
+
+  function construirDots() {
+    dotsContainer.innerHTML = '';
+    slides.forEach((_, i) => {
+      const dot = document.createElement('button');
+      dot.setAttribute('aria-label', `Foto ${i + 1}`);
+      dot.className = 'w-2 h-2 rounded-full transition-all duration-300 bg-white/50';
+      dot.addEventListener('click', () => { irPara(i); reiniciar(); });
+      dotsContainer.appendChild(dot);
+    });
+    dots = Array.from(dotsContainer.children);
+  }
+
+  function atualizarUI() {
+    track.style.transform = `translateX(-${atual * 100}%)`;
+    dots.forEach((d, i) => {
+      d.classList.toggle('bg-white', i === atual);
+      d.classList.toggle('w-5', i === atual);
+      d.classList.toggle('bg-white/50', i !== atual);
+      d.classList.toggle('w-2', i !== atual);
+    });
+  }
+
+  function irPara(i) {
+    if (!slides.length) return;
+    atual = (i + slides.length) % slides.length;
+    atualizarUI();
+  }
+
+  function proximo() { irPara(atual + 1); }
+  function iniciar()  { parar(); if (slides.length > 1) timer = setInterval(proximo, INTERVALO); }
+  function parar()    { if (timer) { clearInterval(timer); timer = null; } }
+  function reiniciar(){ iniciar(); }
+
+  carrossel.addEventListener('mouseenter', parar);
+  carrossel.addEventListener('mouseleave', iniciar);
+  carrossel.addEventListener('focusin',    parar);
+  carrossel.addEventListener('focusout',   iniciar);
+
+  construirDots();
+  atualizarUI();
+  iniciar();
 }
 
 /**
@@ -382,9 +460,9 @@ async function carregarDepoimentosSalvos(carrosselAPI) {
     const data = await resp.json();
 
     if (data && data.success && Array.isArray(data.depoimentos)) {
-      // A API já devolve do mais novo para o mais antigo; inserindo cada um
-      // no início, na ordem recebida, mantém essa ordem no carrossel.
-      data.depoimentos.forEach((dep) => {
+      // A API já devolve do mais novo para o mais antigo; pegamos só os
+      // MAX_DEPOIMENTOS_EXIBIDOS primeiros (os mais recentes).
+      data.depoimentos.slice(0, MAX_DEPOIMENTOS_EXIBIDOS).forEach((dep) => {
         const el = criarSlideDepoimentoEl(dep);
         carrosselAPI.adicionarSlideNoInicio(el);
       });
@@ -653,6 +731,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initSmoothScroll();
   initHeaderScrollShadow();
   initMobileMenu();
+  initSobreCarrossel();
   initShareButton();
   initConsultoriaForm();
 

@@ -54,6 +54,7 @@
     <nav class="hidden md:flex items-center gap-lg">
       <a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors" href="#top">Home</a>
       <a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors" href="#services">Serviços</a>
+      <a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors" href="centro-do-viajante.html">Centro do Viajante</a>
       <a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors" href="#about">Sobre Nós</a>
       <a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors" href="#contact">Contato</a>
     </nav>
@@ -122,7 +123,7 @@
     <!-- Foto de alta qualidade: bangalôs sobre água turquesa (Unsplash, licença gratuita) -->
     <div class="absolute inset-0 z-0">
       <div class="w-full h-full bg-cover bg-right-center scale-105 transition-transform duration-[10000ms] ease-out"
-           style="background-image: url('https://images.unsplash.com/photo-1590523277543-a94d2e4eb00b?w=2000&q=90&auto=format&fit=crop'); background-position: center right;"></div>
+           style="background-image: url('assets/img/portugal.jpg'); background-position: center right;"></div>
 
       <!-- Desktop: azul marinho forte à esquerda (onde fica o texto), transparente à direita -->
       <div class="absolute inset-0 hidden md:block"
@@ -338,8 +339,34 @@
       <div class="flex flex-col md:flex-row items-center gap-xl">
 
         <div class="w-full md:w-1/2 relative">
-          <div class="relative z-10 rounded-xl overflow-hidden shadow-2xl">
-            <img class="w-full h-[280px] md:h-[500px] object-cover" alt="Torre Eiffel em Paris" src="assets/img/foto_paris.jpg"/>
+          <!-- Carrossel de fotos "Nossa História": 6 fotos, 1 por vez, troca automática
+               (mesmo comportamento do carrossel de depoimentos — ver initSobreCarrossel() em js/main.js).
+               Troque os "src" abaixo pelas fotos reais que quiser usar aqui. -->
+          <div id="sobre-carrossel" class="relative z-10 rounded-xl overflow-hidden shadow-2xl">
+            <div id="sobre-viewport" class="overflow-hidden h-[380px] md:h-[700px]">
+              <div id="sobre-track" class="flex h-full transition-transform duration-700 ease-in-out">
+                <div class="w-full h-full flex-shrink-0">
+                  <img class="w-full h-full object-cover" src="assets/img/dippe6.jpeg"/>
+                </div>
+                <div class="w-full h-full flex-shrink-0">
+                  <img class="w-full h-full object-cover" src="assets/img/dippe1.jpeg"/>
+                </div>
+                <div class="w-full h-full flex-shrink-0">
+                  <img class="w-full h-full object-cover" src="assets/img/dippe2.jpeg"/>
+                </div>
+                <div class="w-full h-full flex-shrink-0">
+                  <img class="w-full h-full object-cover" src="assets/img/dippe3.jpeg"/>
+                </div>
+                <div class="w-full h-full flex-shrink-0">
+                  <img class="w-full h-full object-cover" src="assets/img/dippe4.jpeg"/>
+                </div>
+                <div class="w-full h-full flex-shrink-0">
+                  <img class="w-full h-full object-cover" src="assets/img/dippe5.jpeg"/>
+                </div>
+              </div>
+            </div>
+            <!-- Bolinhas indicadoras (geradas via JS) -->
+            <div id="sobre-dots" class="absolute bottom-md left-1/2 -translate-x-1/2 flex items-center gap-xs z-20"></div>
           </div>
           <div class="hidden md:block absolute -bottom-6 -right-6 w-64 h-64 bg-primary-fixed rounded-xl -z-10 opacity-30"></div>
         </div>
@@ -348,10 +375,10 @@
           <span class="text-secondary font-label-md text-label-md tracking-widest uppercase">Nossa História</span>
           <h2 class="font-headline-lg text-headline-lg text-primary mt-sm mb-md">Uma Jornada de Confiança</h2>
           <p class="font-body-lg text-body-lg text-on-surface-variant mb-md">
-            Fundada com o propósito de redefinir o conceito de consultoria de viagens, a Dippe Viagens nasceu para ser aquela sua amiga que entende tudo de viagem e resolve o lado burocrático para você só curtir. Criamos roteiros sob medida para que você explore o mundo sabendo que tem alguém de confiança cuidando de tudo.
+            A Dippe Viagens nasceu da paixão do casal Diogo e Felippe por explorar o mundo juntos, desde o momento em que se conheceram. O que começou de forma natural, ajudando amigos próximos a encontrarem passagens mais baratas e aprenderem sobre o mundo das milhas, logo se transformou no sonho de fundar uma empresa dedicada a proporcionar experiências inesquecíveis para outras pessoas. Entendemos que cada cliente carrega uma história única, por isso priorizamos um atendimento humano e empático, atento às suas reais necessidades para criar roteiros verdadeiramente personalizados.
           </p>
           <p class="font-body-lg text-body-lg text-on-surface-variant mb-lg">
-            Acreditamos em um planejamento leve, transparentes e sem complicações. Estaremos com você em cada etapa, garantindo a tranquilidade de quem viaja com um especialista por perto e zero dor de cabeça.
+            Nosso propósito vai muito além de vender viagens; queremos parceiros de jornada para aqueles que desejam ir mais longe com tranquilidade. Por isso, buscamos incansavelmente os menores preços e as melhores condições do mercado. Mesmo quando o cliente opta por não emitir as passagens conosco, fazemos questão de oferecer todo o suporte, a pesquisa e a orientação necessárias para garantir que ele encontre a melhor opção. Na Dippe Viagens, a sua economia, a sua segurança e a sua satisfação estão sempre em primeiro lugar.
           </p>
           <div class="grid grid-cols-2 gap-md">
             <div>
@@ -388,7 +415,7 @@
           <div class="text-center md:text-left xl:text-center">
             <h3 class="font-headline-md text-headline-md text-primary">Felippe Magarão</h3>
             <p class="font-label-md text-label-md text-secondary mb-sm">CEO da Dippe Viagens</p>
-            <p class="font-body-md text-body-md text-on-surface-variant">Felippe traz paixão e expertise para cada viagem.</p>
+            <p class="font-body-md text-body-md text-on-surface-variant">Fundador da Dippe Viagens, especialista em roteiros personalizados, milhas e logística internacional. Unindo visão tecnológica à paixão por viajar, transformo planejamentos complexos em experiências únicas, eficientes e sem perrengues pelo mundo.</p>
           </div>
         </div>
 
@@ -411,8 +438,8 @@
           </div>
           <div class="text-center md:text-left xl:text-center">
             <h3 class="font-headline-md text-headline-md text-primary">Larissa Nobrega</h3>
-            <p class="font-label-md text-label-md text-secondary mb-sm">Dev Web & Marketing Digital</p>
-            <p class="font-body-md text-body-md text-on-surface-variant">Larissa é especialista em criar estratégias de marketing que impulsionam o crescimento da empresa.</p>
+            <p class="font-label-md text-label-md text-secondary mb-sm">Designer & Dev Web</p>
+            <p class="font-body-md text-body-md text-on-surface-variant">Designer e desenvolvedora web apaixonada por transformar ideias em soluções visuais e digitais marcantes. Uno estética, código e funcionalidade para transformar cada clique em uma navegação fluida e marcante.</p>
           </div>
         </div>
 
@@ -524,6 +551,12 @@
           <span class="gallery-caption absolute bottom-0 left-0 right-0 p-sm text-on-primary font-label-md text-label-md opacity-0 group-hover:opacity-100 transition-opacity"></span>
         </button>
 
+        <button class="gallery-item gallery-extra hidden group relative overflow-hidden rounded-xl premium-shadow" data-full="assets/img/foto_lari8.jpeg">
+          <img class="w-full h-full aspect-square object-cover transition-transform duration-500 group-hover:scale-110" src="assets/img/foto_lari8.jpeg"/>
+          <span class="absolute inset-0 bg-gradient-to-t from-primary/80 via-primary/0 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></span>
+          <span class="gallery-caption absolute bottom-0 left-0 right-0 p-sm text-on-primary font-label-md text-label-md opacity-0 group-hover:opacity-100 transition-opacity"></span>
+        </button>
+
         <button class="gallery-item gallery-extra hidden group relative overflow-hidden rounded-xl premium-shadow" data-full="assets/img/dippe8.jpeg">
           <img class="w-full h-full aspect-square object-cover transition-transform duration-500 group-hover:scale-110" src="assets/img/dippe8.jpeg"/>
           <span class="absolute inset-0 bg-gradient-to-t from-primary/80 via-primary/0 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></span>
@@ -531,7 +564,7 @@
         </button>
       </div>
     </div>
-    
+
     <!-- Botão "Ver mais": revela o restante das fotos da galeria (ver toggleGalleryExtras() em js/main.js) -->
       <div class="text-center mt-lg">
         <button id="gallery-toggle-btn" class="inline-flex items-center gap-xs px-lg py-sm border border-primary text-primary font-label-md text-label-md rounded-lg hover:bg-primary hover:text-on-primary transition-all">
@@ -553,7 +586,11 @@
   </div>
 
   <!-- ==========================================================================
-       DEPOIMENTOS — 3 cards, 1 por vez, slide automático (autoplay)
+       DEPOIMENTOS — somente depoimentos reais, enviados pelos próprios
+       clientes através do formulário abaixo. O carrossel é populado
+       dinamicamente via JS (ver carregarDepoimentosSalvos() e
+       initDepoimentoForm() em js/main.js) e mostra sempre, no máximo, os
+       5 depoimentos mais recentes (ver MAX_DEPOIMENTOS_EXIBIDOS em js/main.js).
        ========================================================================== -->
   <section class="py-xl bg-mesh border-t border-outline-variant/20" id="depoimentos">
     <div class="max-w-7xl mx-auto px-margin-mobile md:px-margin-desktop">
@@ -564,50 +601,8 @@
 
       <div class="relative" id="depoimentos-carrossel">
         <div class="overflow-hidden" id="depoimentos-viewport">
+          <!-- Track vazio de propósito: os slides são inseridos aqui via JS -->
           <div class="flex transition-transform duration-700 ease-in-out" id="depoimentos-track">
-
-            <!-- Depoimento 1 -->
-            <div class="w-full flex-shrink-0 flex justify-center px-sm" data-depoimentos-pagina>
-              <div class="bg-surface-container-lowest p-xl rounded-2xl premium-shadow border border-outline-variant/20 flex flex-col justify-between w-full max-w-2xl">
-                <p class="font-body-md text-body-md md:text-lg text-on-surface-variant italic mb-lg leading-relaxed">"Desde o primeiro contato, senti que tinha alguém realmente cuidando de cada detalhe. Tirei todas as dúvidas direto com a equipe, sem complicação e a viagem foi só sucesso. Parabéns equipe Dippe Viagens, irei indicar sempree!!!"</p>
-                <div class="flex items-center gap-md">
-                  <div class="w-14 h-14 flex-shrink-0 rounded-full bg-primary-fixed border-2 border-primary-fixed flex items-center justify-center font-label-md text-label-md text-primary select-none" aria-hidden="true">MS</div>
-                  <div>
-                    <h4 class="font-bold text-base text-primary">Mariana Silva</h4>
-                    <p class="font-label-md text-xs text-secondary">Bali</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Depoimento 2 -->
-            <div class="w-full flex-shrink-0 flex justify-center px-sm" data-depoimentos-pagina>
-              <div class="bg-surface-container-lowest p-xl rounded-2xl premium-shadow border border-outline-variant/20 flex flex-col justify-between w-full max-w-2xl">
-                <p class="font-body-md text-body-md md:text-lg text-on-surface-variant italic mb-lg leading-relaxed">"O acompanhamento durante a viagem fez toda a diferença. Tivemos um imprevisto no aeroporto e a equipe resolveu tudo rapidamente pelo WhatsApp."</p>
-                <div class="flex items-center gap-md">
-                  <div class="w-14 h-14 flex-shrink-0 rounded-full bg-primary-fixed border-2 border-primary-fixed flex items-center justify-center font-label-md text-label-md text-primary select-none" aria-hidden="true">LR</div>
-                  <div>
-                    <h4 class="font-bold text-base text-primary">Lucas Rocha</h4>
-                    <p class="font-label-md text-xs text-secondary">Canadá</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Depoimento 3 -->
-            <div class="w-full flex-shrink-0 flex justify-center px-sm" data-depoimentos-pagina>
-              <div class="bg-surface-container-lowest p-xl rounded-2xl premium-shadow border border-outline-variant/20 flex flex-col justify-between w-full max-w-2xl">
-                <p class="font-body-md text-body-md md:text-lg text-on-surface-variant italic mb-lg leading-relaxed">"Não precisei me preocupar com passagem, hotel ou visto. Mandei o que eu queria e eles organizaram tudo. Atendimento próximo do início ao fim."</p>
-                <div class="flex items-center gap-md">
-                  <div class="w-14 h-14 flex-shrink-0 rounded-full bg-primary-fixed border-2 border-primary-fixed flex items-center justify-center font-label-md text-label-md text-primary select-none" aria-hidden="true">BC</div>
-                  <div>
-                    <h4 class="font-bold text-base text-primary">Beatriz Costa</h4>
-                    <p class="font-label-md text-xs text-secondary">Austrália</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
           </div>
         </div>
 
@@ -818,7 +813,7 @@
       <p class="font-label-md text-label-md text-on-surface mb-xs">Olá! 👋</p>
       <p class="font-body-md text-body-md text-on-surface-variant text-sm leading-snug">Quer planejar sua viagem? Fale com a gente pelo WhatsApp!</p>
       <a
-        href="https://wa.me/5521991442236?text=Ol%C3%A1%2C%20vim%20pelo%20site%20e%20gostaria%20de%20planejar%20minha%20viagem!"
+        href="https://wa.me/351910842596?text=Ol%C3%A1%2C%20vim%20pelo%20site%20e%20gostaria%20de%20planejar%20minha%20viagem!"
         target="_blank"
         rel="noopener noreferrer"
         class="mt-sm flex items-center justify-center gap-xs w-full py-sm bg-[#25D366] text-white font-label-md text-label-md rounded-xl hover:bg-[#1ebe5d] transition-colors shadow-sm"
